@@ -1,0 +1,160 @@
+<!doctype html>
+<html lang="ja" data-theme="auto">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AI Weekly — {{ report.period.from }} 〜 {{ report.period.to }}</title>
+<meta name="description" content="{{ report.period.from }}〜{{ report.period.to }} の AI 業界トレンド自動収集レポート">
+<style>
+  :root{
+    --bg:#f7f7f5; --surface:#fff; --border:#e3e2dd; --text:#1a1a18;
+    --muted:#6b6a65; --accent:#c15f3c; --accent-soft:#f4e6e0; --shadow:0 1px 2px rgba(0,0,0,.05);
+  }
+  :root[data-theme="dark"]{
+    --bg:#161614; --surface:#1f1f1d; --border:#33322e; --text:#ecebe7;
+    --muted:#9a9892; --accent:#e08a68; --accent-soft:#3a2620; --shadow:0 1px 2px rgba(0,0,0,.3);
+  }
+  @media (prefers-color-scheme: dark){
+    :root[data-theme="auto"]{
+      --bg:#161614; --surface:#1f1f1d; --border:#33322e; --text:#ecebe7;
+      --muted:#9a9892; --accent:#e08a68; --accent-soft:#3a2620; --shadow:0 1px 2px rgba(0,0,0,.3);
+    }
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0; background:var(--bg); color:var(--text);
+    font-family:"Hiragino Sans","Noto Sans JP",system-ui,-apple-system,sans-serif;
+    line-height:1.7; -webkit-font-smoothing:antialiased;
+    transition:background .2s,color .2s;
+  }
+  .wrap{max-width:860px; margin:0 auto; padding:32px 20px 80px}
+  header{display:flex; justify-content:space-between; align-items:flex-start; gap:16px; flex-wrap:wrap}
+  h1{font-size:1.5rem; margin:0 0 4px; letter-spacing:-.01em}
+  .period{color:var(--muted); font-size:.875rem; margin:0}
+  .toggle{
+    background:var(--surface); color:var(--text); border:1px solid var(--border);
+    border-radius:999px; padding:8px 14px; font-size:.8125rem; cursor:pointer;
+    display:inline-flex; align-items:center; gap:6px; box-shadow:var(--shadow);
+  }
+  .toggle:hover{border-color:var(--accent)}
+  .highlights{
+    margin:28px 0; padding:20px 22px; background:var(--accent-soft);
+    border:1px solid var(--border); border-radius:12px;
+  }
+  .highlights h2{font-size:.8125rem; letter-spacing:.08em; text-transform:uppercase;
+    color:var(--accent); margin:0 0 10px}
+  .highlights ol{margin:0; padding-left:20px}
+  .highlights li{margin:6px 0}
+  .filters{display:flex; gap:8px; flex-wrap:wrap; margin:24px 0 8px}
+  .chip{
+    background:var(--surface); border:1px solid var(--border); color:var(--muted);
+    border-radius:999px; padding:5px 12px; font-size:.8125rem; cursor:pointer;
+  }
+  .chip[aria-pressed="true"]{background:var(--accent); border-color:var(--accent); color:#fff}
+  .card{
+    background:var(--surface); border:1px solid var(--border); border-radius:12px;
+    padding:18px 20px; margin:12px 0; box-shadow:var(--shadow);
+  }
+  .card.hidden{display:none}
+  .meta{display:flex; gap:10px; align-items:center; flex-wrap:wrap; font-size:.75rem; color:var(--muted)}
+  .src{
+    background:var(--accent-soft); color:var(--accent); border-radius:4px;
+    padding:2px 8px; font-weight:600;
+  }
+  .stars{color:var(--accent); letter-spacing:1px}
+  .card h3{margin:8px 0 6px; font-size:1.0625rem; line-height:1.45}
+  .card h3 a{color:var(--text); text-decoration:none}
+  .card h3 a:hover{color:var(--accent); text-decoration:underline}
+  .orig{display:block; font-size:.8125rem; color:var(--muted); font-weight:400; margin-top:2px}
+  .summary{margin:8px 0 0}
+  .why{margin:8px 0 0; font-size:.875rem; color:var(--muted); border-left:2px solid var(--border); padding-left:12px}
+  .tags{margin-top:10px; display:flex; gap:6px; flex-wrap:wrap}
+  .tag{font-size:.75rem; color:var(--muted); border:1px solid var(--border); border-radius:4px; padding:1px 7px}
+  footer{margin-top:48px; padding-top:20px; border-top:1px solid var(--border);
+    color:var(--muted); font-size:.8125rem}
+  footer a{color:var(--accent)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div>
+      <h1>AI Weekly</h1>
+      <p class="period">{{ report.period.from }} 〜 {{ report.period.to }} ／ {{ report['items']|length }}件</p>
+    </div>
+    <button class="toggle" id="theme-toggle" type="button" aria-live="polite">
+      <span id="theme-icon">◐</span><span id="theme-label">テーマ</span>
+    </button>
+  </header>
+
+  {% if report.highlights %}
+  <section class="highlights">
+    <h2>今週の要点</h2>
+    <ol>{% for h in report.highlights %}<li>{{ h }}</li>{% endfor %}</ol>
+  </section>
+  {% endif %}
+
+  <div class="filters" id="filters">
+    <button class="chip" data-src="all" aria-pressed="true">すべて</button>
+    {% for s in sources %}<button class="chip" data-src="{{ s }}" aria-pressed="false">{{ s }}</button>{% endfor %}
+  </div>
+
+  <main id="list">
+    {% for item in report['items'] %}
+    <article class="card" data-src="{{ item.source }}">
+      <div class="meta">
+        <span class="src">{{ item.source }}</span>
+        <span>{{ item.date }}</span>
+        <span class="stars" title="重要度 {{ item.importance }}/5">{{ '★' * item.importance }}{{ '☆' * (5 - item.importance) }}</span>
+      </div>
+      <h3>
+        <a href="{{ item.url }}" target="_blank" rel="noopener noreferrer">{{ item.title_ja or item.title }}</a>
+        {% if item.title_ja and item.title_ja != item.title %}<span class="orig">{{ item.title }}</span>{% endif %}
+      </h3>
+      <p class="summary">{{ item.summary }}</p>
+      {% if item.why %}<p class="why">{{ item.why }}</p>{% endif %}
+      {% if item.tags %}<div class="tags">{% for t in item.tags %}<span class="tag">{{ t }}</span>{% endfor %}</div>{% endif %}
+    </article>
+    {% endfor %}
+  </main>
+
+  <footer>
+    <p>Claude Agent SDK による自動生成 ／ 生成日時: {{ generated_at }}</p>
+    <p><a href="https://github.com/kskrm/claude-agent-sdk-demo">ソースコード</a></p>
+  </footer>
+</div>
+
+<script>
+  // --- テーマ切り替え: auto（OS追従） → light → dark → auto ---
+  const order = ["auto", "light", "dark"];
+  const face  = { auto: ["◐", "自動"], light: ["☀", "ライト"], dark: ["☾", "ダーク"] };
+  const root  = document.documentElement;
+
+  function applyTheme(mode) {
+    root.dataset.theme = mode;
+    document.getElementById("theme-icon").textContent  = face[mode][0];
+    document.getElementById("theme-label").textContent = face[mode][1];
+    try { localStorage.setItem("ai-weekly-theme", mode); } catch (_) {}
+  }
+
+  let saved = "auto";
+  try { saved = localStorage.getItem("ai-weekly-theme") || "auto"; } catch (_) {}
+  applyTheme(order.includes(saved) ? saved : "auto");
+
+  document.getElementById("theme-toggle").addEventListener("click", () => {
+    applyTheme(order[(order.indexOf(root.dataset.theme) + 1) % order.length]);
+  });
+
+  // --- 情報源フィルタ ---
+  document.getElementById("filters").addEventListener("click", (e) => {
+    const btn = e.target.closest(".chip");
+    if (!btn) return;
+    document.querySelectorAll(".chip").forEach(c => c.setAttribute("aria-pressed", c === btn));
+    const src = btn.dataset.src;
+    document.querySelectorAll(".card").forEach(card => {
+      card.classList.toggle("hidden", src !== "all" && card.dataset.src !== src);
+    });
+  });
+</script>
+</body>
+</html>

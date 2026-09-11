@@ -1,0 +1,31 @@
+{
+  "period": {"from": "2026-09-04", "to": "2026-09-11"},
+  "highlights": [
+    "サンプルデータです。`--skip-agent` で描画確認するためのダミーです。",
+    "実際の実行では data/YYYY-MM-DD.json が AI によって生成されます。",
+    "テーマ切替（自動/ライト/ダーク）と情報源フィルタの動作確認に使えます。"
+  ],
+  "items": [
+    {"title": "Sample: A new frontier model", "title_ja": "サンプル: 新しいフロンティアモデル",
+     "url": "https://www.anthropic.com/news", "source": "Anthropic", "date": "2026-09-09",
+     "summary": "これはレンダリング確認用のダミー項目です。実際にはAIが収集した内容が入ります。",
+     "why": "テンプレートの表示崩れを確認するための項目。", "importance": 5,
+     "tags": ["モデル", "研究"]},
+    {"title": "Sample: Agent API update", "title_ja": "サンプル: エージェントAPIの更新",
+     "url": "https://openai.com/news/", "source": "OpenAI", "date": "2026-09-08",
+     "summary": "ダミー項目その2。重要度4の表示を確認します。", "why": "★4つの表示確認。",
+     "importance": 4, "tags": ["エージェント", "開発ツール"]},
+    {"title": "Sample: Strands Agents on Bedrock", "title_ja": "",
+     "url": "https://aws.amazon.com/blogs/machine-learning/", "source": "AWS Machine Learning Blog",
+     "date": "2026-09-07", "summary": "ダミー項目その3。原題のみの場合の表示を確認します。",
+     "why": "title_ja が空のときの挙動確認。", "importance": 3, "tags": ["事例"]},
+    {"title": "サンプル: Claude Agent SDK 入門", "title_ja": "サンプル: Claude Agent SDK 入門",
+     "url": "https://qiita.com/tags/ai", "source": "Qiita", "date": "2026-09-06",
+     "summary": "ダミー項目その4。日本語記事の表示を確認します。", "why": "日本語ソースの表示確認。",
+     "importance": 3, "tags": ["開発ツール"]},
+    {"title": "サンプル: MCPサーバの作り方", "title_ja": "サンプル: MCPサーバの作り方",
+     "url": "https://zenn.dev/topics/ai", "source": "Zenn", "date": "2026-09-05",
+     "summary": "ダミー項目その5。フィルタ動作の確認に使います。", "why": "フィルタ確認用。",
+     "importance": 2, "tags": ["開発ツール", "エージェント"]}
+  ]
+}
