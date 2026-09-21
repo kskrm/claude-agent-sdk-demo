@@ -1,0 +1,6 @@
+# 収集の中間生成物（毎回作り直されるためコミットしない）
+.cache/
+
+node_modules/
+npm-debug.log*
+.DS_Store

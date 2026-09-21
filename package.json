@@ -1,0 +1,23 @@
+{
+  "name": "weekly-ai-news",
+  "version": "1.0.0",
+  "private": true,
+  "description": "AI業界トレンドを週次で自動収集し、グラレコ風HTMLとしてGitHub Pagesへ公開しDiscordへ通知する",
+  "type": "module",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "collect": "node scripts/collect.mjs",
+    "prepare:tasks": "node scripts/prepare.mjs",
+    "merge": "node scripts/merge.mjs",
+    "build": "node scripts/build-html.mjs",
+    "notify": "node scripts/notify-discord.mjs",
+    "notify:dry": "node scripts/notify-discord.mjs --dry-run",
+    "pipeline:nollm": "npm run collect && npm run prepare:tasks && npm run merge && npm run build"
+  },
+  "license": "MIT",
+  "devDependencies": {
+    "playwright": "^1.63.0"
+  }
+}
