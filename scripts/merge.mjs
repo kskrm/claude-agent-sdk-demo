@@ -10,6 +10,7 @@ import { readFile, writeFile, mkdir, readdir } from 'node:fs/promises';
 import { resolve } from 'node:path';
 import { fallbackScore, fallbackSummary, fallbackTags } from './lib/score.mjs';
 import { jstDateString } from './lib/util.mjs';
+import { isKnownIcon } from './lib/icons.mjs';
 
 const args = Object.fromEntries(
   process.argv.slice(2).reduce((acc, cur, i, arr) => {
@@ -130,7 +131,9 @@ const report = {
   generatedAt: new Date().toISOString(),
   headline: (overview?.headline || `今週のAI業界トレンド（${selected.length}件）`).trim(),
   summaryJa: (overview?.summaryJa || overview?.summary_ja || '').trim(),
-  keyPoints: (overview?.keyPoints || overview?.key_points || []).slice(0, 4),
+  keyPoints: (overview?.keyPoints || overview?.key_points || []).slice(0, 4).map((k) =>
+    typeof k === 'string' ? { label: '', text: k, icon: '' } : { ...k, icon: isKnownIcon(k?.icon) ? k.icon : '' }
+  ),
   topTags,
   featuredIds,
   deepDives: [],
