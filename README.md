@@ -3,7 +3,7 @@
 毎週土曜 07:00 JST に AI 業界の情報を自動収集し、**グラレコ（グラフィックレコーディング）風の HTML レポート**を
 GitHub Pages に公開して Discord に通知する仕組みです。
 
-📖 **公開レポート: https://kskrm.github.io/claude-agent-sdk-demo/**
+📖 **公開レポート: https://kskrm.github.io/claude-agent-sdk-demo/docs/**
 
 ---
 
@@ -111,16 +111,20 @@ node scripts/notify-discord.mjs --dry-run  # 送信せずペイロードを表�
 | 変数 | 必須 | 用途 |
 |---|---|---|
 | `DISCORD_WEBHOOK_URL_WEEKLY_NEWS` | 通知する場合のみ | Discord Webhook URL。**リポジトリには保存しない** |
-| `PAGES_BASE_URL` | 任意 | 公開 URL のベース。既定 `https://kskrm.github.io/claude-agent-sdk-demo` |
+| `PAGES_BASE_URL` | 任意 | 公開 URL のベース。既定 `https://kskrm.github.io/claude-agent-sdk-demo/docs` |
 
 ### GitHub Pages の有効化（初回のみ）
 
 リポジトリの **Settings → Pages** で
 
 - Source: `Deploy from a branch`
-- Branch: `main` / `/docs`
+- Branch: `main` / `/ (root)`
 
-を選んで Save します。
+を選んで Save します。ルート配信なので README がトップページになり、
+週次レポートは `/docs/` 配下（`https://kskrm.github.io/claude-agent-sdk-demo/docs/`）で公開されます。
+
+Branch を `/docs` に変更した場合は、レポートがリポジトリ直下の URL で公開されるため、
+環境変数 `PAGES_BASE_URL=https://kskrm.github.io/claude-agent-sdk-demo` を設定してください。
 
 ### 週次 Routine
 

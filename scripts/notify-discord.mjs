@@ -18,7 +18,9 @@ const args = Object.fromEntries(
 );
 const DRY_RUN = argv.includes('--dry-run');
 const RUN_DATE = args.date ?? jstDateString();
-const PAGES_BASE = (process.env.PAGES_BASE_URL ?? 'https://kskrm.github.io/claude-agent-sdk-demo').replace(/\/$/, '');
+// GitHub Pages はリポジトリのルートから配信しているため、レポートは /docs 配下に置かれる。
+// Pages の Source を main / docs に変更した場合は PAGES_BASE_URL で上書きする。
+const PAGES_BASE = (process.env.PAGES_BASE_URL ?? 'https://kskrm.github.io/claude-agent-sdk-demo/docs').replace(/\/$/, '');
 const WEBHOOK = process.env.DISCORD_WEBHOOK_URL_WEEKLY_NEWS;
 
 const report = JSON.parse(await readFile(resolve(`data/${RUN_DATE}.json`), 'utf8'));
