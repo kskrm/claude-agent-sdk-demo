@@ -21,6 +21,8 @@ const RUN_DATE = args.date ?? jstDateString();
 const TOP = Number(args.top ?? 24);
 // 1つの情報源がレポートを占有しないよう上限を設ける（多様性の確保）
 const MAX_PER_SOURCE = Number(args.maxPerSource ?? 5);
+// 深掘り解説の対象にする本数。情報源が偏らないよう1情報源あたり2本までに抑える。
+const FEATURED = Number(args.featured ?? 5);
 
 const raw = JSON.parse(await readFile(resolve(`.cache/raw-${RUN_DATE}.json`), 'utf8'));
 const rawById = new Map(raw.items.map((i) => [i.id, i]));
@@ -100,6 +102,22 @@ try {
   overview = null;
 }
 
+// 深掘り対象の選定: スコア上位から、1情報源あたり最大2本まで
+const featuredIds = [];
+const featuredPerSource = new Map();
+for (const t of selected) {
+  if (featuredIds.length >= FEATURED) break;
+  const n = featuredPerSource.get(t.sourceId) ?? 0;
+  if (n >= 2) continue;
+  featuredPerSource.set(t.sourceId, n + 1);
+  featuredIds.push(t.id);
+}
+// 多様性の制約で埋まらなかった場合はスコア順で補充
+for (const t of selected) {
+  if (featuredIds.length >= FEATURED) break;
+  if (!featuredIds.includes(t.id)) featuredIds.push(t.id);
+}
+
 const tagCount = new Map();
 for (const t of selected) for (const tag of t.tags) tagCount.set(tag, (tagCount.get(tag) ?? 0) + 1);
 const topTags = [...tagCount.entries()].sort((a, b) => b[1] - a[1]).slice(0, 5).map(([tag, count]) => ({ tag, count }));
@@ -114,6 +132,8 @@ const report = {
   summaryJa: (overview?.summaryJa || overview?.summary_ja || '').trim(),
   keyPoints: (overview?.keyPoints || overview?.key_points || []).slice(0, 4),
   topTags,
+  featuredIds,
+  deepDives: [],
   sourceStats: raw.sourceStats,
   collectedCount: raw.itemCount,
   curatedCount: selected.filter((t) => t.curatedBy === 'subagent').length,
@@ -123,6 +143,7 @@ const report = {
 await mkdir(resolve('data'), { recursive: true });
 const out = resolve(`data/${RUN_DATE}.json`);
 await writeFile(out, `${JSON.stringify(report, null, 2)}\n`, 'utf8');
+console.log(`[merge] 深掘り対象: ${featuredIds.join(', ')}`);
 console.log(
   `[merge] ${selected.length} 件を採用（サブエージェント採点 ${report.curatedCount} / フォールバック ${selected.length - report.curatedCount}） -> ${out}`
 );
