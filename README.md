@@ -1,9 +1,41 @@
-# AI業界トレンド 週次自動収集
+# AI業界トレンド 週次自動収集・解説
 
-毎週土曜 07:00 JST に AI 業界の情報を自動収集し、**グラレコ（グラフィックレコーディング）風の HTML レポート**を
+毎週土曜 07:00 JST に AI 業界の情報を自動収集し、**主要トピックを IT 初心者にも分かるように
+かみ砕いて解説した、グラレコ（グラフィックレコーディング）風の HTML サイト**を
 GitHub Pages に公開して Discord に通知する仕組みです。
 
-📖 **公開レポート: https://kskrm.github.io/claude-agent-sdk-demo/docs/**
+📖 **公開サイト: https://kskrm.github.io/claude-agent-sdk-demo/docs/**
+
+ニュースを並べるだけのまとめではありません。**「何が起きたか」だけでなく
+「それを理解するのに必要な要素技術は何か」「身近なものにたとえると何か」までを、
+毎週 5 本ぶん自動で書き起こします。**
+
+---
+
+## 出力される 2 ページ
+
+| ページ | 中身 |
+|---|---|
+| `docs/<日付>.html`（＝ `index.html`） | **深掘り解説 5 本**。1 本ごとに「つかみ → そもそもの話 → たとえるなら → 図解 → 使われている技術 → 何が変わる？ → 用語メモ → 次の一歩」 |
+| `docs/<日付>-list.html` | 今週集めた**全トピックの一覧**。解説対象の記事には「くわしい解説 →」リンクが付く |
+
+2 ページは相互にリンクしているので、どちらから入っても行き来できます。
+
+### 解説 1 本の構成
+
+```
+① 初心者向けに言い換えた見出し      例:「文章ではなく答えだけ返すAI」
+② つかみ                            専門用語ゼロで「何が起きたか」を2〜3文
+③ そもそもの話（付箋）              理解に必要な前提知識
+④ たとえるなら（付箋）              日常のものへのたとえ
+   例:「飲食店で注文を確かめるとき、店員さんが順に話すのがこれまでのAI。
+       Jevは伝票のチェック欄に一度で印をつけて返します」
+⑤ 図解                              flow / compare / layers の3種から内容に合うもの
+⑥ 使われている技術                  要素技術を2〜4個、「一言で」＋「なぜ必要か」まで
+⑦ 何が変わる？                      「誰に」「何が」の形で2〜3個
+⑧ 用語メモ                          この記事に出てきた用語を3〜6個、1行ずつ
+⑨ 次の一歩                          読者が実際に試せること
+```
 
 ---
 
@@ -14,15 +46,17 @@ Claude Code Routine（毎週土曜 07:00 JST / cron: 0 22 * * 5 UTC）
   │
   └─ /weekly-news スラッシュコマンドを実行
        │
-       ├─ 1. collect.mjs    8つの情報源を並列取得 → 直近7日分に絞る → 重複排除
-       ├─ 2. prepare.mjs    情報源ごとのタスクファイルに分割
-       ├─ 3. サブエージェント並列起動（情報源の数だけ同時に走る）
-       │       news-curator が日本語要約・重要度スコア・タグ付けを担当
-       ├─ 4. 全体サマリ      Claude が「今週の要点」を1つにまとめる
-       ├─ 5. merge.mjs      data/YYYY-MM-DD.json を確定
-       ├─ 6. build-html.mjs docs/*.html（グラレコ風）を生成
-       ├─ 7. git push       GitHub Pages が自動で更新される
-       └─ 8. notify-discord.mjs  Discord Webhook に通知
+       ├─ 1. collect.mjs          8つの情報源を並列取得 → 直近7日分 → 重複排除
+       ├─ 2. prepare.mjs          情報源ごとのタスクに分割
+       ├─ 3. news-curator × 7     【並列】日本語要約・重要度スコア・タグ付け
+       ├─ 4. 全体サマリ            Claude が「今週の要点」を1つにまとめる
+       ├─ 5. merge.mjs            採録24件を確定し、深掘り5件を選ぶ
+       ├─ 6. prepare-explain.mjs  深掘り5件を1件ずつのタスクに切り出す
+       ├─ 7. topic-explainer × 5  【並列】記事本文を読み、初心者向け解説を書く ★中心★
+       ├─ 8. apply-explain.mjs    スキーマ検証のうえ確定データに差し込む
+       ├─ 9. build-html.mjs       解説ページ＋一覧ページを生成
+       ├─10. git push             GitHub Pages が自動で更新される
+       └─11. notify-discord.mjs   Discord Webhook に通知
 ```
 
 ### なぜ「決定論的な処理」と「LLM の処理」を分けているのか
@@ -30,11 +64,20 @@ Claude Code Routine（毎週土曜 07:00 JST / cron: 0 22 * * 5 UTC）
 | 工程 | 担当 | 理由 |
 |---|---|---|
 | 取得・日付絞り込み・重複排除 | Node スクリプト | 毎回同じ結果になるべき処理。LLM に任せると取りこぼしや幻覚が起きる |
-| 要約・重要度判定・タグ付け | サブエージェント（LLM） | 「重要かどうか」は規則で書ききれない。人間的な判断が要る |
-| HTML 生成 | Node スクリプト | 見た目が毎週変わると読みにくい。テンプレートで固定する |
+| 要約・重要度判定・タグ付け | `news-curator` | 「重要かどうか」は規則で書ききれない |
+| 深掘り解説の執筆 | `topic-explainer` | 記事本文を読んで噛み砕く仕事。人間的な読みが要る |
+| 図の描画・HTML 生成 | Node スクリプト | 見た目が毎週変わると読みにくい。テンプレートで固定する |
 
-LLM 工程が失敗しても、`merge.mjs` がキーワードベースの自動採点にフォールバックするので
-**レポートが 0 件になることはありません**。
+**図は LLM に SVG を書かせていません。** サブエージェントは「図の型（flow / compare / layers）と
+ラベルの組」という構造化データだけを返し、描画は `render.mjs` が決定論的に行います。
+これで毎週の見た目が安定し、崩れた図が出ることもありません。
+
+LLM 工程が失敗しても
+
+- 採点が欠ければ `merge.mjs` がキーワードベースの自動採点にフォールバック
+- 解説が欠ければ `apply-explain.mjs` がその 1 本を落とし、残りでページを組む
+
+ので、**サイトが空になることはありません**。
 
 ---
 
@@ -61,22 +104,25 @@ LLM 工程が失敗しても、`merge.mjs` がキーワードベースの自動�
 
 ```
 .claude/
-  commands/weekly-news.md   Routine が実行する手順書（スラッシュコマンド）
-  agents/news-curator.md    情報源1つを担当するサブエージェントの定義
+  commands/weekly-news.md     Routine が実行する手順書（スラッシュコマンド）
+  agents/news-curator.md      情報源1つを担当し、要約・採点するサブエージェント
+  agents/topic-explainer.md   トピック1件を担当し、初心者向け解説を書くサブエージェント
 scripts/
-  collect.mjs               情報源を並列取得 → .cache/raw-YYYY-MM-DD.json
-  prepare.mjs               情報源ごとのタスクに分割 → .cache/tasks/*.json
-  merge.mjs                 サブエージェント出力を統合 → data/YYYY-MM-DD.json
-  build-html.mjs            グラレコ風HTMLを生成 → docs/*.html
-  notify-discord.mjs        Discord Webhook へ通知
+  collect.mjs                 情報源を並列取得 → .cache/raw-YYYY-MM-DD.json
+  prepare.mjs                 情報源ごとのタスクに分割 → .cache/tasks/*.json
+  merge.mjs                   採点を統合し深掘り対象を選ぶ → data/YYYY-MM-DD.json
+  prepare-explain.mjs         深掘り対象を1件ずつに切り出す → .cache/explain-tasks/*.json
+  apply-explain.mjs           解説を検証して確定データに差し込む
+  build-html.mjs              解説ページ＋一覧ページを生成 → docs/
+  notify-discord.mjs          Discord Webhook へ通知
   lib/
-    feeds.mjs               情報源の定義
-    parse.mjs               RSS / Atom / HTML / HN API のパーサ（依存ゼロ）
-    score.mjs               LLM を使わないフォールバック採点
-    render.mjs              グラレコ風レンダラ（インライン SVG + CSS）
-    util.mjs                JST 変換・URL 正規化・リトライ付き fetch
-data/YYYY-MM-DD.json        週次レポートの確定データ（コミットする）
-docs/                       GitHub Pages の公開ディレクトリ
+    feeds.mjs                 情報源の定義
+    parse.mjs                 RSS / Atom / HTML / HN API のパーサ（依存ゼロ）
+    score.mjs                 LLM を使わないフォールバック採点
+    render.mjs                グラレコ風レンダラ（インライン SVG + CSS）
+    util.mjs                  JST 変換・URL 正規化・リトライ付き fetch
+data/YYYY-MM-DD.json          週次レポートの確定データ（コミットする）
+docs/                         GitHub Pages の公開ディレクトリ
 ```
 
 ---
@@ -86,15 +132,17 @@ docs/                       GitHub Pages の公開ディレクトリ
 Node.js 20 以上のみ必要です（npm install 不要 / 依存パッケージゼロ）。
 
 ```bash
-# LLM を使わずパイプライン全体を通す（動作確認用）
+# LLM を使わずパイプライン全体を通す（動作確認用。解説は生成されない）
 npm run pipeline:nollm
 
 # 個別に実行
-node scripts/collect.mjs --days 7          # 収集
-node scripts/prepare.mjs --max 12          # 情報源ごとに最大12件へ絞る
-node scripts/merge.mjs --top 24 --maxPerSource 5
-node scripts/build-html.mjs
-node scripts/notify-discord.mjs --dry-run  # 送信せずペイロードを表示
+node scripts/collect.mjs --days 7              # 収集
+node scripts/prepare.mjs --max 12              # 情報源ごとに最大12件へ絞る
+node scripts/merge.mjs --top 24 --maxPerSource 5 --featured 5
+node scripts/prepare-explain.mjs               # 深掘りタスクを切り出す
+node scripts/apply-explain.mjs                 # 解説を差し込む
+node scripts/build-html.mjs                    # 2ページ生成
+node scripts/notify-discord.mjs --dry-run      # 送信せずペイロードを表示
 
 # Claude Code 上で LLM 込みのフル実行
 /weekly-news
@@ -113,17 +161,16 @@ node scripts/notify-discord.mjs --dry-run  # 送信せずペイロードを表�
 | `DISCORD_WEBHOOK_URL_WEEKLY_NEWS` | 通知する場合のみ | Discord Webhook URL。**リポジトリには保存しない** |
 | `PAGES_BASE_URL` | 任意 | 公開 URL のベース。既定 `https://kskrm.github.io/claude-agent-sdk-demo/docs` |
 
-### GitHub Pages の有効化（初回のみ）
+### GitHub Pages
 
 リポジトリの **Settings → Pages** で
 
 - Source: `Deploy from a branch`
 - Branch: `main` / `/ (root)`
 
-を選んで Save します。ルート配信なので README がトップページになり、
-週次レポートは `/docs/` 配下（`https://kskrm.github.io/claude-agent-sdk-demo/docs/`）で公開されます。
+ルート配信なので README がトップページになり、サイトは `/docs/` 配下で公開されます。
 
-Branch を `/docs` に変更した場合は、レポートがリポジトリ直下の URL で公開されるため、
+Branch を `/docs` に変更した場合は、サイトがリポジトリ直下の URL で公開されるため、
 環境変数 `PAGES_BASE_URL=https://kskrm.github.io/claude-agent-sdk-demo` を設定してください。
 
 ### 週次 Routine
@@ -139,13 +186,22 @@ Routine は毎回まっさらなセッションで起動するため、手順は
 
 | やりたいこと | 変更する場所 |
 |---|---|
+| 解説の本数を変える | `node scripts/merge.mjs --featured 3` |
 | 情報源を足す・外す | `scripts/lib/feeds.mjs` の `SOURCES` |
 | 対象期間を変える | `node scripts/collect.mjs --days 14` |
-| 採録件数を変える | `node scripts/merge.mjs --top 30` |
+| 一覧の採録件数を変える | `node scripts/merge.mjs --top 30` |
 | 1情報源の偏りを調整 | `node scripts/merge.mjs --maxPerSource 3` |
+| **解説の書き方・読者像を変える** | `.claude/agents/topic-explainer.md` |
 | 重要度の判定基準を変える | `.claude/agents/news-curator.md` のスコア表 |
 | 自動採点のキーワードを変える | `scripts/lib/score.mjs` の `KEYWORDS` |
-| 見た目を変える | `scripts/lib/render.mjs` の `css` / SVG パーツ |
+| 図の見た目を変える | `scripts/lib/render.mjs` の `renderDiagram()` |
+| 全体の見た目を変える | `scripts/lib/render.mjs` の `css` |
+
+### 図の型を足したいとき
+
+1. `.claude/agents/topic-explainer.md` の「型の選び方」に新しい型を追記
+2. `scripts/apply-explain.mjs` の `DIAGRAM_TYPES` に型名を追加し、`normalizeDiagram()` に検証を追加
+3. `scripts/lib/render.mjs` の `renderDiagram()` に描画を追加
 
 ---
 

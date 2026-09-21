@@ -25,12 +25,26 @@ const WEBHOOK = process.env.DISCORD_WEBHOOK_URL_WEEKLY_NEWS;
 
 const report = JSON.parse(await readFile(resolve(`data/${RUN_DATE}.json`), 'utf8'));
 const reportUrl = `${PAGES_BASE}/${RUN_DATE}.html`;
+const listUrl = `${PAGES_BASE}/${RUN_DATE}-list.html`;
 
-const top = report.topics.slice(0, 5);
-const lines = top.map((t, i) => {
-  const title = (t.titleJa || t.title).replace(/\n/g, ' ');
-  return `**${i + 1}. [${title}](${t.url})**\n　${t.sourceLabel}・${jstLabel(t.publishedAt)}・重要度 ${t.score}\n　${t.summaryJa.slice(0, 110)}`;
-});
+const dives = report.deepDives ?? [];
+
+// 深掘り解説があればそれを主役にする。無ければ従来どおり上位トピックを並べる。
+const lines = dives.length
+  ? dives.map((d, i) => {
+      const concepts = d.concepts.map((c) => c.term).join('・');
+      return [
+        `**${i + 1}. [${d.headline.replace(/\n/g, ' ')}](${reportUrl}#dive-${d.id})**`,
+        `　${d.hook.slice(0, 130)}`,
+        concepts ? `　🔧 ${concepts}` : '',
+      ]
+        .filter(Boolean)
+        .join('\n');
+    })
+  : report.topics.slice(0, 5).map((t, i) => {
+      const title = (t.titleJa || t.title).replace(/\n/g, ' ');
+      return `**${i + 1}. [${title}](${t.url})**\n　${t.sourceLabel}・${jstLabel(t.publishedAt)}・重要度 ${t.score}\n　${t.summaryJa.slice(0, 110)}`;
+    });
 
 const payload = {
   username: 'AI週次トレンド',
@@ -39,13 +53,14 @@ const payload = {
       title: `🗞 AI業界トレンド 週次まとめ（${jstLabel(report.since)} 〜 ${jstLabel(report.until)}）`,
       url: reportUrl,
       description: [
-        report.headline,
+        `**${report.headline}**`,
         report.summaryJa,
         '',
+        dives.length ? '📖 **今週の解説**（クリックで図解つきの解説へ）' : '',
         ...lines,
         '',
-        `📊 ${report.collectedCount} 件を収集 → ${report.topics.length} 件を採録`,
-        `🎨 [グラレコ風レポート全文はこちら](${reportUrl})`,
+        `📊 ${report.collectedCount} 件を収集 → ${report.topics.length} 件を採録 → ${dives.length} 本を解説`,
+        `🎨 [解説を読む](${reportUrl})　📋 [トピック一覧](${listUrl})`,
       ]
         .filter(Boolean)
         .join('\n')

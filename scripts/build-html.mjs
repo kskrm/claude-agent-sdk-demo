@@ -1,14 +1,15 @@
 #!/usr/bin/env node
 /**
- * data/*.json から GitHub Pages 用の HTML を生成する。
- *   docs/<date>.html  … 各週のレポート
- *   docs/index.html   … 最新週（バックナンバー導線つき）
+ * data/*.json から GitHub Pages 用の HTML を 2 ページ生成する。
+ *   docs/<date>.html       … 主要トピックの深掘り解説（メイン）
+ *   docs/<date>-list.html  … 今週集めたトピックの一覧（サブ）
+ *   docs/index.html        … 最新週の解説ページ
  *
  *   node scripts/build-html.mjs [--date YYYY-MM-DD]
  */
 import { readFile, writeFile, mkdir, readdir } from 'node:fs/promises';
 import { resolve } from 'node:path';
-import { renderReport } from './lib/render.mjs';
+import { renderExplainPage, renderListPage } from './lib/render.mjs';
 
 const args = Object.fromEntries(
   process.argv.slice(2).reduce((acc, cur, i, arr) => {
@@ -33,15 +34,16 @@ const targets = args.date ? [`${args.date}.json`] : files;
 for (const file of targets) {
   const report = JSON.parse(await readFile(resolve(dataDir, file), 'utf8'));
   const date = file.replace('.json', '');
-  const html = renderReport(report, { archive, current: date });
-  await writeFile(resolve(docsDir, `${date}.html`), html, 'utf8');
-  console.log(`[build-html] docs/${date}.html`);
+  const nav = { archive, current: date };
+  await writeFile(resolve(docsDir, `${date}.html`), renderExplainPage(report, nav), 'utf8');
+  await writeFile(resolve(docsDir, `${date}-list.html`), renderListPage(report, nav), 'utf8');
+  console.log(`[build-html] docs/${date}.html（解説 ${report.deepDives?.length ?? 0} 本） + docs/${date}-list.html`);
 }
 
-// 最新週を index.html に複製
+// 最新週の解説ページを index.html に複製
 const latest = archive[0];
 const latestReport = JSON.parse(await readFile(resolve(dataDir, `${latest}.json`), 'utf8'));
-await writeFile(resolve(docsDir, 'index.html'), renderReport(latestReport, { archive, current: latest }), 'utf8');
+await writeFile(resolve(docsDir, 'index.html'), renderExplainPage(latestReport, { archive, current: latest }), 'utf8');
 // Jekyll の処理を無効化（_ 始まりのパスや特殊文字で崩れるのを防ぐ）
 await writeFile(resolve(docsDir, '.nojekyll'), '', 'utf8');
 console.log(`[build-html] docs/index.html （最新: ${latest}）`);
