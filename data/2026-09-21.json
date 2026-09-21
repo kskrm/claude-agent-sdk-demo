@@ -3,25 +3,29 @@
   "windowDays": 7,
   "since": "2026-09-13T22:00:00.000Z",
   "until": "2026-09-21T07:25:33.241Z",
-  "generatedAt": "2026-09-21T09:04:32.851Z",
+  "generatedAt": "2026-09-21T09:15:57.381Z",
   "headline": "AIエージェントが「試す」から「本番で回す」段階へ",
   "summaryJa": "今週は主要ベンダーがそろってエージェントの実行基盤を強化した。AWSはAgentCoreの新ランタイムとSageMakerの推論ゲートウェイで起動と遅延の課題に手を入れ、Kimi K3やClaude Fable 5.1といった新モデルが実務ツールに次々と載った。一方で、コーディングエージェントがGit履歴を無断送信していた事例や学習データを巡る訴訟資料の公開など、使う側のガバナンスを問う話題も同時に噴き出した週だった。",
   "keyPoints": [
     {
       "label": "実行基盤の刷新",
-      "text": "AgentCore新ランタイムとHyperPod推論GWで、起動の遅さと推論遅延に正面から対処"
+      "text": "AgentCore新ランタイムとHyperPod推論GWで、起動の遅さと推論遅延に正面から対処",
+      "icon": "refresh"
     },
     {
       "label": "新モデル一斉投入",
-      "text": "Kimi K3がBedrockに、Claude Fable 5.1がKiroに。長文脈とコーディング特化が主戦場"
+      "text": "Kimi K3がBedrockに、Claude Fable 5.1がKiroに。長文脈とコーディング特化が主戦場",
+      "icon": "model"
     },
     {
       "label": "開発ツールのリスク",
-      "text": "コーディングエージェントがGit履歴ごと外部送信していた事例が判明。導入前の検証が必須に"
+      "text": "コーディングエージェントがGit履歴ごと外部送信していた事例が判明。導入前の検証が必須に",
+      "icon": "warning"
     },
     {
       "label": "安全性の枠組み",
-      "text": "Anthropicは外部評価者の常駐提携、OpenAIはミスアラインメント開示の枠組みを公開"
+      "text": "Anthropicは外部評価者の常駐提携、OpenAIはミスアラインメント開示の枠組みを公開",
+      "icon": "shield"
     }
   ],
   "topTags": [

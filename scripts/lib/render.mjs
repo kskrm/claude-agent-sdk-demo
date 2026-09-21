@@ -1,6 +1,13 @@
 // グラレコ（グラフィックレコーディング）風 HTML のレンダラ。
 // 外部ライブラリ・外部JSに依存せず、インライン SVG + CSS だけで描画する。
 //
+// 意匠の方針（AWS Geek 風のグラレコを参照）:
+//   - 白地に「アンバー＋淡い水色」の2色主体。色数を絞って紙面を落ち着かせる
+//   - 見出しは短冊リボン（両端に縦線の飾り）
+//   - 流れは塗りつぶしの三角矢印
+//   - アイコンは大きく、マーカーで塗ったような色面の上に置く
+//   - 文字は少なく、図で分からせる
+//
 //   renderExplainPage() … 主要トピックの深掘り解説（メインページ）
 //   renderListPage()    … 今週集めたトピックの一覧（サブページ）
 import { jstLabel } from './util.mjs';
@@ -22,64 +29,64 @@ function jpNumber(n) {
   return trim(n);
 }
 
-// 深掘り1本ごとに色を変えて、読み手が章の切れ目を見失わないようにする
-const ACCENTS = ['a1', 'a2', 'a3', 'a4', 'a5'];
+// 章ごとに色面を振り分けて、単調にならないようにする（基調色は変えない）
+const TINTS = ['t-sky', 't-amber', 't-sky', 't-amber', 't-sky'];
 
 // ─────────────────────────────────────────────
-// SVG パーツ（手描き風）
+// SVG パーツ
 // ─────────────────────────────────────────────
 const svgDefs = `
 <svg class="gr-defs" aria-hidden="true" focusable="false">
   <defs>
-    <filter id="rough" x="-12%" y="-12%" width="124%" height="124%">
-      <feTurbulence type="fractalNoise" baseFrequency="0.028" numOctaves="3" seed="7" result="noise"/>
-      <feDisplacementMap in="SourceGraphic" in2="noise" scale="2.6" xChannelSelector="R" yChannelSelector="G"/>
+    <filter id="rough" x="-14%" y="-14%" width="128%" height="128%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.026" numOctaves="3" seed="7" result="n"/>
+      <feDisplacementMap in="SourceGraphic" in2="n" scale="2.2" xChannelSelector="R" yChannelSelector="G"/>
     </filter>
-    <filter id="rough-soft" x="-12%" y="-12%" width="124%" height="124%">
-      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3" result="n2"/>
-      <feDisplacementMap in="SourceGraphic" in2="n2" scale="1.5" xChannelSelector="R" yChannelSelector="G"/>
+    <filter id="rough-soft" x="-14%" y="-14%" width="128%" height="128%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.018" numOctaves="2" seed="4" result="n2"/>
+      <feDisplacementMap in="SourceGraphic" in2="n2" scale="1.3" xChannelSelector="R" yChannelSelector="G"/>
     </filter>
-    <marker id="arrowhead" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
-      <path d="M0,1 L9,5 L0,9 z" fill="currentColor"/>
-    </marker>
   </defs>
 </svg>`;
 
-const squiggle = (w = 280) => `
-<svg class="gr-squiggle" viewBox="0 0 ${w} 12" preserveAspectRatio="none" aria-hidden="true">
-  <path d="M2,8 C ${w * 0.15},2 ${w * 0.3},11 ${w * 0.45},6 S ${w * 0.75},2 ${w - 2},7"
-        fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" filter="url(#rough)"/>
+/** 塗りつぶしの三角矢印。dir は right / down */
+const tri = (dir = 'right') =>
+  `<svg class="tri ${dir}" viewBox="0 0 24 24" aria-hidden="true"><path d="M5,2.5 L20.5,12 L5,21.5 Z" fill="currentColor" filter="url(#rough-soft)"/></svg>`;
+
+/** 中央の集中線（今週の要点） */
+const sunburst = () => {
+  const rays = [];
+  for (let i = 0; i < 28; i += 1) {
+    const a = (i / 28) * Math.PI * 2;
+    const r1 = 62 + (i % 3) * 4;
+    const r2 = r1 + (i % 2 ? 17 : 11);
+    rays.push(
+      `<line x1="${(100 + Math.cos(a) * r1).toFixed(1)}" y1="${(100 + Math.sin(a) * r1).toFixed(1)}" x2="${(100 + Math.cos(a) * r2).toFixed(1)}" y2="${(100 + Math.sin(a) * r2).toFixed(1)}"/>`
+    );
+  }
+  return `<svg class="sun-rays" viewBox="0 0 200 200" aria-hidden="true"><g stroke="currentColor" stroke-width="3.8" stroke-linecap="round" filter="url(#rough)">${rays.join('')}</g></svg>`;
+};
+
+/** 繰り返しを示す戻り矢印 */
+const loopArrow = () => `
+<svg class="loop" viewBox="0 0 300 40" preserveAspectRatio="none" aria-hidden="true">
+  <path d="M292,6 C292,32 250,34 150,34 C50,34 10,32 10,10" fill="none" stroke="currentColor"
+        stroke-width="3" stroke-linecap="round" stroke-dasharray="9 7" filter="url(#rough-soft)"/>
+  <path d="M3,14 L10,2 L17,14 Z" fill="currentColor" filter="url(#rough-soft)"/>
 </svg>`;
 
-const arrowDown = () => `
-<svg class="gr-arrow" viewBox="0 0 40 64" aria-hidden="true">
-  <path d="M20,4 C14,20 26,34 19,58" fill="none" stroke="currentColor" stroke-width="3"
-        stroke-linecap="round" marker-end="url(#arrowhead)" filter="url(#rough-soft)"/>
-</svg>`;
-
-const arrowRight = () => `
-<svg class="gr-arrow-r" viewBox="0 0 64 40" aria-hidden="true">
-  <path d="M4,20 C20,14 34,26 58,19" fill="none" stroke="currentColor" stroke-width="3"
-        stroke-linecap="round" marker-end="url(#arrowhead)" filter="url(#rough-soft)"/>
-</svg>`;
-
-const rankBadge = (rank) => `
-<svg class="gr-rank" viewBox="0 0 48 48" aria-hidden="true">
-  <circle cx="24" cy="24" r="19" fill="none" stroke="currentColor" stroke-width="2.6" filter="url(#rough)"/>
-  <circle cx="24" cy="24" r="22" fill="none" stroke="currentColor" stroke-width="1.2" opacity=".45" filter="url(#rough)"/>
-  <text x="24" y="31" text-anchor="middle" font-size="19" font-weight="700" fill="currentColor">${rank}</text>
-</svg>`;
-
-/** 手描き風のスコアメーター（0〜100） */
 const scoreMeter = (score) => {
   const w = 120;
   const filled = Math.max(4, Math.round((score / 100) * (w - 8)));
   return `
 <svg class="gr-meter" viewBox="0 0 ${w} 16" role="img" aria-label="重要度 ${score} / 100">
-  <rect x="2" y="3" width="${w - 4}" height="10" rx="5" fill="none" stroke="currentColor" stroke-width="1.8" opacity=".55" filter="url(#rough-soft)"/>
+  <rect x="2" y="3" width="${w - 4}" height="10" rx="5" fill="none" stroke="currentColor" stroke-width="1.8" opacity=".5" filter="url(#rough-soft)"/>
   <rect x="4" y="5" width="${filled}" height="6" rx="3" class="gr-meter-fill" filter="url(#rough-soft)"/>
 </svg>`;
 };
+
+/** 短冊リボンの見出し */
+const ribbon = (text, cls = '') => `<span class="ribbon ${cls}">${esc(text)}</span>`;
 
 // ─────────────────────────────────────────────
 // CSS
@@ -87,451 +94,362 @@ const scoreMeter = (score) => {
 const css = `
 :root{
   color-scheme: light;
-  --paper:#fdf8ec; --paper-2:#f6efdd; --grid:rgba(120,96,60,.13);
-  --ink:#2b2420; --ink-soft:#6b5d51; --ink-faint:#9b8a79;
-  --accent:#e2603c; --accent-2:#2f7d8c; --accent-3:#c9a227;
-  --a1:#e2603c; --a2:#2f7d8c; --a3:#7c5ba6; --a4:#3f8f5a; --a5:#c07a1e;
-  --note-yellow:#ffe9a8; --note-pink:#ffd3dd; --note-blue:#cfe6f7;
-  --note-green:#d6f0cd; --note-orange:#ffd9b0; --note-purple:#e2d8f7;
-  --note-ink:#2b2420; --card:#fffdf6; --card-2:#fbf5e6;
-  --shadow:rgba(80,62,40,.22); --tape:rgba(150,140,120,.32);
+  --paper:#ffffff; --paper-2:#fbfaf7; --rule:#d9dee3;
+  --ink:#232323; --ink-soft:#5d5d5d; --ink-faint:#8f8f8f;
+  --amber:#f2a71b; --amber-deep:#cf8409; --amber-pale:#fdeecb; --amber-wash:#fdf6e7;
+  --sky:#8dc0e4; --sky-deep:#3277a8; --sky-pale:#d9ebf8; --sky-wash:#eff7fc;
+  --card:#ffffff; --shadow:rgba(40,40,40,.14);
 }
 :root[data-theme="dark"]{
   color-scheme: dark;
-  --paper:#1b1a22; --paper-2:#222230; --grid:rgba(190,205,255,.09);
-  --ink:#f2ece2; --ink-soft:#c3bab0; --ink-faint:#8d8478;
-  --accent:#ff8a63; --accent-2:#63c8d8; --accent-3:#f0c64a;
-  --a1:#ff8a63; --a2:#63c8d8; --a3:#b498e8; --a4:#6fcf8e; --a5:#f0b455;
-  --note-yellow:#6a5a1e; --note-pink:#6d2f42; --note-blue:#1f4a66;
-  --note-green:#2c5330; --note-orange:#6d4420; --note-purple:#433562;
-  --note-ink:#f6f1e7; --card:#262533; --card-2:#2e2d3d;
-  --shadow:rgba(0,0,0,.5); --tape:rgba(200,200,210,.22);
+  --paper:#15171c; --paper-2:#1a1d23; --rule:#3a4049;
+  --ink:#f3f1eb; --ink-soft:#b8b4ac; --ink-faint:#85817a;
+  --amber:#f5b841; --amber-deep:#f7c86a; --amber-pale:#463617; --amber-wash:#2a2416;
+  --sky:#7fb3d9; --sky-deep:#9fcbe8; --sky-pale:#1f3547; --sky-wash:#1a2530;
+  --card:#1d2027; --shadow:rgba(0,0,0,.55);
 }
 @media (prefers-color-scheme: dark){
   :root:not([data-theme="light"]){
     color-scheme: dark;
-    --paper:#1b1a22; --paper-2:#222230; --grid:rgba(190,205,255,.09);
-    --ink:#f2ece2; --ink-soft:#c3bab0; --ink-faint:#8d8478;
-    --accent:#ff8a63; --accent-2:#63c8d8; --accent-3:#f0c64a;
-    --a1:#ff8a63; --a2:#63c8d8; --a3:#b498e8; --a4:#6fcf8e; --a5:#f0b455;
-    --note-yellow:#6a5a1e; --note-pink:#6d2f42; --note-blue:#1f4a66;
-    --note-green:#2c5330; --note-orange:#6d4420; --note-purple:#433562;
-    --note-ink:#f6f1e7; --card:#262533; --card-2:#2e2d3d;
-    --shadow:rgba(0,0,0,.5); --tape:rgba(200,200,210,.22);
+    --paper:#15171c; --paper-2:#1a1d23; --rule:#3a4049;
+    --ink:#f3f1eb; --ink-soft:#b8b4ac; --ink-faint:#85817a;
+    --amber:#f5b841; --amber-deep:#f7c86a; --amber-pale:#463617; --amber-wash:#2a2416;
+    --sky:#7fb3d9; --sky-deep:#9fcbe8; --sky-pale:#1f3547; --sky-wash:#1a2530;
+    --card:#1d2027; --shadow:rgba(0,0,0,.55);
   }
 }
 
 *{box-sizing:border-box}
 html,body{margin:0;padding:0}
 body{
-  background-color:var(--paper);
-  background-image:
-    radial-gradient(var(--grid) 1.1px, transparent 1.1px),
-    linear-gradient(180deg, var(--paper) 0%, var(--paper-2) 100%);
-  background-size:22px 22px, 100% 100%;
+  background:var(--paper);
   color:var(--ink);
   font-family:"Yomogi","Klee One","Zen Kurenaido","Kalam","Comic Sans MS","Segoe Print",
     "Hiragino Maru Gothic ProN","BIZ UDPGothic","Yu Gothic",system-ui,sans-serif;
-  line-height:1.85;
+  line-height:1.8;
   -webkit-text-size-adjust:100%;
   overflow-x:hidden;
 }
 .gr-defs{position:absolute;width:0;height:0}
-.wrap{max-width:1040px;margin:0 auto;padding:20px 16px 64px}
+.wrap{max-width:1000px;margin:0 auto;padding:18px 16px 64px}
 a{color:inherit}
+
+/* ── 短冊リボン ── */
+.ribbon{
+  position:relative;display:inline-block;padding:3px 17px;
+  background:var(--amber-pale);border:2.6px solid var(--ink);border-radius:2px;
+  font-size:clamp(16px,4vw,20px);font-weight:700;line-height:1.6;
+}
+.ribbon::before,.ribbon::after{
+  content:"";position:absolute;top:-4px;bottom:-4px;width:6px;
+  border-left:2.6px solid var(--ink);border-right:2.6px solid var(--ink);
+}
+.ribbon::before{left:-10px}
+.ribbon::after{right:-10px}
+.ribbon.sm{font-size:clamp(14px,3.4vw,16px);padding:2px 14px}
+.ribbon.sky{background:var(--sky-pale)}
+.sec{display:flex;justify-content:center;margin:42px 0 22px}
+.sec-l{display:flex;justify-content:flex-start;margin:28px 0 15px;padding-left:13px}
+
+/* ── 三角矢印 ── */
+.tri{width:22px;height:22px;flex:none;color:var(--ink-soft)}
+.tri.down{transform:rotate(90deg)}
 
 /* ── 上部バー ── */
 .topbar{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
 .pill{
   display:inline-flex;align-items:center;gap:7px;cursor:pointer;text-decoration:none;
   font:inherit;font-size:13px;color:var(--ink);background:var(--card);
-  border:2.2px solid var(--ink);padding:6px 13px;
-  border-radius:225px 14px 210px 16px/16px 200px 14px 225px;
-  box-shadow:2px 2px 0 var(--shadow);
-  transition:transform .15s ease, box-shadow .15s ease;
+  border:2.4px solid var(--ink);padding:5px 13px;border-radius:2px;
+  box-shadow:2px 2px 0 var(--ink);
+  transition:transform .12s ease, box-shadow .12s ease;
 }
-.pill:hover{transform:translate(-1px,-1px);box-shadow:3px 3px 0 var(--shadow)}
-.pill:active{transform:translate(1px,1px);box-shadow:1px 1px 0 var(--shadow)}
-.pill:focus-visible{outline:3px solid var(--accent);outline-offset:3px}
+.pill:hover{transform:translate(-1px,-1px);box-shadow:3px 3px 0 var(--ink)}
+.pill:active{transform:translate(1px,1px);box-shadow:1px 1px 0 var(--ink)}
+.pill:focus-visible{outline:3px solid var(--amber);outline-offset:3px}
 
 /* ── ヘッダー ── */
-.masthead{position:relative;text-align:center;padding:24px 8px 10px}
-.masthead h1{font-size:clamp(25px,6.6vw,44px);line-height:1.28;margin:0 0 6px;letter-spacing:.02em;text-wrap:balance}
-.masthead .mark{background:linear-gradient(transparent 62%, var(--accent-3) 62%, var(--accent-3) 92%, transparent 92%);padding:0 .15em}
-.masthead .period{color:var(--ink-soft);font-size:14px;margin:0}
-.gr-squiggle{display:block;width:min(280px,72%);height:12px;margin:2px auto 0;color:var(--accent)}
+.masthead{text-align:center;padding:26px 8px 4px}
+.masthead h1{font-size:clamp(25px,6.4vw,42px);line-height:1.3;margin:0;text-wrap:balance}
+.masthead .hl{background:linear-gradient(transparent 58%, var(--amber) 58%, var(--amber) 90%, transparent 90%);padding:0 .1em}
+.masthead .period{color:var(--ink-soft);font-size:13.5px;margin:10px 0 0}
 
-/* ── 中央「今週の要点」 ── */
-.hero{position:relative;margin:26px auto 8px;max-width:760px}
-.hero-bubble{
-  position:relative;background:var(--card);border:3px solid var(--ink);
-  border-radius:245px 18px 235px 20px/20px 230px 18px 245px;
-  padding:22px 22px 24px;box-shadow:5px 6px 0 var(--shadow);transform:rotate(-.5deg);
+/* ── 中央「今週の要点」＋4象限 ── */
+.hero{position:relative;margin:30px 0 8px}
+.hero-grid{position:relative;display:grid;grid-template-columns:1fr 1fr}
+.q{padding:22px 16px;min-height:136px;display:flex;flex-direction:column;gap:2px}
+.q:nth-of-type(1){border-right:2px solid var(--rule);border-bottom:2px solid var(--rule);padding-right:104px}
+.q:nth-of-type(2){border-bottom:2px solid var(--rule);padding-left:104px}
+.q:nth-of-type(3){border-right:2px solid var(--rule);padding-right:104px}
+.q:nth-of-type(4){padding-left:104px}
+.q-icon{width:34px;height:34px;color:var(--amber-deep)}
+.q b{font-size:clamp(15px,4vw,19px);line-height:1.45}
+.q span{font-size:12.8px;color:var(--ink-soft);line-height:1.7}
+.sun{
+  position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);z-index:2;
+  width:190px;height:190px;display:grid;place-items:center;text-align:center;
 }
-.hero-label{
-  display:inline-block;font-size:13px;letter-spacing:.14em;color:var(--paper);
-  background:var(--accent);padding:3px 14px;border-radius:200px 12px 200px 12px/12px 200px 12px 200px;
-  transform:rotate(-2deg);margin-bottom:10px;
-}
-.hero-head{font-size:clamp(19px,4.6vw,29px);line-height:1.5;margin:0 0 10px;font-weight:700;text-wrap:balance}
-.hero-sum{margin:0;color:var(--ink-soft);font-size:clamp(13px,3.4vw,15px)}
-.gr-arrow{display:block;width:34px;height:54px;margin:2px auto;color:var(--accent-2)}
-.gr-arrow-r{width:54px;height:34px;color:var(--accent-2);flex:none}
-.cmp-mid .gr-arrow-r{width:46px;height:30px}
-
-/* ── 付箋 ── */
-.notes{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,210px),1fr));gap:14px;margin:16px 0 8px}
-.note{
-  position:relative;padding:14px 14px 16px;color:var(--note-ink);
-  border-radius:4px 14px 6px 12px;box-shadow:3px 4px 0 var(--shadow);
-  font-size:14px;line-height:1.7;
-}
-.note::after{content:"";position:absolute;top:-7px;left:50%;width:46px;height:15px;
-  transform:translateX(-50%) rotate(-3deg);background:var(--tape);border-radius:2px}
-.note:nth-child(4n+1){transform:rotate(-1.4deg);background:var(--note-yellow)}
-.note:nth-child(4n+2){transform:rotate(1.1deg);background:var(--note-blue)}
-.note:nth-child(4n+3){transform:rotate(-.7deg);background:var(--note-green)}
-.note:nth-child(4n+4){transform:rotate(1.6deg);background:var(--note-pink)}
-.note b{display:block;font-size:15px;margin-bottom:2px}
-
-/* ── タグの吹き出し ── */
-.tagrow{display:flex;flex-wrap:wrap;gap:9px;justify-content:center;margin:20px 0 6px}
-.tagbubble{
-  font-size:13px;padding:5px 13px;border:2.2px solid var(--ink);background:var(--card);
-  border-radius:200px 14px 200px 14px/14px 200px 14px 200px;box-shadow:2px 2px 0 var(--shadow);
-}
+.sun-rays{position:absolute;inset:0;width:100%;height:100%;color:var(--amber)}
+.sun-core{position:relative;width:128px;height:128px;border-radius:50%;background:var(--paper);display:grid;place-items:center;padding:8px}
+.sun-core b{font-size:14px;letter-spacing:.08em;color:var(--amber-deep);display:block;line-height:1.4}
+.sun-core span{font-size:11.5px;color:var(--ink-soft);display:block;line-height:1.5;margin-top:2px}
+.hero-head{margin:24px auto 0;max-width:720px;text-align:center;font-size:clamp(18px,4.6vw,27px);line-height:1.55;font-weight:700;text-wrap:balance}
+.hero-sum{margin:9px auto 0;max-width:680px;text-align:center;color:var(--ink-soft);font-size:13.5px}
+.tagrow{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin:20px 0 0}
+.tagbubble{font-size:12.5px;padding:3px 12px;border:2.2px solid var(--sky-deep);color:var(--sky-deep);border-radius:2px}
 .tagbubble small{color:var(--ink-faint);margin-left:4px}
 
-/* ── セクション見出し ── */
-.section-head{display:flex;align-items:center;gap:10px;margin:40px 0 14px}
-.section-head h2{font-size:clamp(18px,4.6vw,24px);margin:0;white-space:nowrap}
-.section-head .rule{flex:1;height:3px;border-radius:2px;opacity:.5;
-  background:repeating-linear-gradient(90deg,var(--ink) 0 14px,transparent 14px 22px)}
+/* ═══════════ 深掘り解説 ═══════════ */
+.dive{margin:34px 0 0;padding:26px 22px 28px;background:var(--card);border:3px solid var(--ink);border-radius:3px;box-shadow:6px 6px 0 var(--shadow)}
+.dive.t-sky{--tint:var(--sky-pale);--tint-wash:var(--sky-wash)}
+.dive.t-amber{--tint:var(--amber-pale);--tint-wash:var(--amber-wash)}
 
-/* ═══════════════ 深掘り解説 ═══════════════ */
-.dive{
-  --ac:var(--a1);
-  position:relative;margin:30px 0 0;padding:22px 20px 24px;
-  background:var(--card);border:3px solid var(--ink);
-  border-radius:235px 18px 225px 20px/20px 220px 18px 240px;
-  box-shadow:5px 6px 0 var(--shadow);
-}
-.dive.a1{--ac:var(--a1)} .dive.a2{--ac:var(--a2)} .dive.a3{--ac:var(--a3)}
-.dive.a4{--ac:var(--a4)} .dive.a5{--ac:var(--a5)}
-.dive:nth-of-type(odd){transform:rotate(-.25deg)}
-.dive:nth-of-type(even){transform:rotate(.2deg)}
+.dive-top{display:flex;gap:13px;align-items:center;flex-wrap:wrap;margin-bottom:5px}
+.dive-no{flex:none;width:40px;height:40px;display:grid;place-items:center;font-size:19px;font-weight:700;color:var(--ink);background:var(--amber);border:2.6px solid var(--ink);border-radius:2px}
+.dive-art{position:relative;display:grid;place-items:center;width:62px;height:56px;flex:none}
+.dive-art::before{content:"";position:absolute;inset:2px 0;background:var(--tint);border-radius:48% 52% 56% 44%/56% 44% 58% 42%}
+.dive-art svg{position:relative;width:38px;height:38px;color:var(--amber-deep)}
+.dive-art svg path{stroke-width:1.9}
+.dive-head{margin:0;font-size:clamp(20px,5.2vw,30px);line-height:1.4;font-weight:700;flex:1 1 220px;min-width:0;text-wrap:balance}
+.dive-meta{margin:0 0 16px;font-size:11.5px;color:var(--ink-faint)}
 
-.dive-top{display:flex;gap:12px;align-items:flex-start;margin-bottom:12px}
-.dive-top .ic-xl{margin-top:1px}
-.dive-no{
-  flex:none;width:42px;height:42px;display:grid;place-items:center;
-  font-size:19px;font-weight:700;color:var(--paper);background:var(--ac);
-  border-radius:200px 13px 190px 15px/15px 185px 13px 200px;transform:rotate(-4deg);
-}
-.dive-head{margin:0;font-size:clamp(19px,4.8vw,28px);line-height:1.45;font-weight:700;text-wrap:balance}
-.dive-meta{margin:3px 0 0;font-size:12px;color:var(--ink-faint)}
+.dive-hook{margin:0 0 20px;font-size:clamp(14.5px,3.6vw,16.5px);line-height:1.95;padding:15px 17px;background:var(--tint-wash);border-left:7px solid var(--amber)}
 
-.dive-hook{
-  margin:0 0 18px;font-size:clamp(14.5px,3.7vw,16.5px);line-height:1.9;
-  padding:14px 16px;background:var(--card-2);
-  border:2.4px solid var(--ac);
-  border-radius:200px 16px 195px 18px/18px 190px 16px 210px;
-}
+.two{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,270px),1fr));gap:16px}
+.panel{padding:15px 17px;font-size:13.8px;line-height:1.9;border:2.4px solid var(--ink);border-radius:2px}
+.panel.bg{background:var(--sky-wash)}
+.panel.an{background:var(--amber-wash)}
+.panel > b{display:inline-block;font-size:14px;margin-bottom:5px;padding:1px 10px;border:2px solid var(--ink);background:var(--paper)}
+.panel p{margin:6px 0 0}
 
-.dd-sub{display:flex;align-items:center;gap:9px;margin:26px 0 12px}
-.dd-sub h4{margin:0;font-size:16px;white-space:nowrap;color:var(--ac)}
-.dd-sub .r{flex:1;height:2.5px;border-radius:2px;background:currentColor;color:var(--ac);opacity:.35}
+/* たとえ話のミニ図 */
+.analogy-strip{display:flex;align-items:center;justify-content:center;gap:14px;flex-wrap:wrap;margin-top:15px;padding-top:13px;border-top:2px dashed var(--rule)}
+.analogy-strip figure{display:grid;justify-items:center;gap:3px;margin:0;font-size:12.5px;max-width:120px;text-align:center}
 
-.two{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,260px),1fr));gap:16px;margin-top:4px}
-.panel{
-  padding:15px 16px;border-radius:6px 16px 8px 14px;font-size:14px;line-height:1.85;
-  box-shadow:3px 4px 0 var(--shadow);color:var(--note-ink);
-}
-.panel.bg{background:var(--note-blue);transform:rotate(-.8deg)}
-.panel.an{background:var(--note-yellow);transform:rotate(.7deg)}
-.panel b{display:block;font-size:15px;margin-bottom:4px}
+/* アイコンタイル（図の共通部品） */
+.tile{display:grid;justify-items:center;gap:5px;margin:0;text-align:center;flex:0 1 152px;min-width:0}
+.tile-art{position:relative;display:grid;place-items:center;width:86px;height:76px}
+.tile-art::before{content:"";position:absolute;inset:4px 0;background:var(--tint);border-radius:47% 53% 55% 45%/57% 43% 57% 43%}
+.tile-art svg{position:relative;width:46px;height:46px;color:var(--amber-deep)}
+.tile-art svg path{stroke-width:1.9}
+.tile b{font-size:14.5px;line-height:1.45}
+.tile span{font-size:12px;color:var(--ink-soft);line-height:1.65;display:block}
 
-/* 要素技術カード */
-.concepts{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,340px),1fr));gap:14px}
-.concept{
-  background:var(--card-2);border:2.4px solid var(--ink);
-  border-radius:16px 200px 14px 195px/195px 14px 205px 16px;
-  padding:14px 15px;box-shadow:3px 4px 0 var(--shadow);
-}
-.concept .term{display:flex;align-items:center;gap:7px;flex-wrap:wrap;margin-bottom:4px;color:var(--ac)}
-.concept .term b{font-size:16px;color:var(--ac)}
-.concept .plain{font-size:13px;color:var(--ink-soft);flex:1 1 100%}
-.concept p{margin:6px 0 0;font-size:13.5px;line-height:1.8;color:var(--ink)}
+/* ── 図版の枠 ── */
+.fig{border:2.6px solid var(--ink);border-radius:2px;background:var(--paper-2);padding:20px 16px 14px}
+.fig-title{margin:0 0 20px;text-align:center}
+.fig-cap{margin:18px 0 0;font-size:12.3px;color:var(--ink-faint);text-align:center;line-height:1.7}
 
-/* ── 図版（3種） ── */
-.fig{
-  border:2.6px dashed var(--ink-soft);border-radius:16px;background:var(--card-2);
-  padding:16px 14px 12px;box-shadow:3px 4px 0 var(--shadow);
-}
-.fig-title{margin:0 0 12px;font-size:15px;text-align:center;color:var(--ac);font-weight:700}
-.fig-cap{margin:12px 0 0;font-size:12.5px;color:var(--ink-faint);text-align:center;line-height:1.7}
+/* flow / cycle: 三角でつなぐ帯 */
+.strip{display:flex;align-items:flex-start;justify-content:center;gap:4px;flex-wrap:wrap}
+.strip .tri{margin-top:26px}
+.strip .tri.down{display:none}
+.cyc-back{display:grid;justify-items:center;margin-top:10px;color:var(--sky-deep)}
+.loop{width:min(100%,420px);height:34px}
+.cyc-back span{font-size:12.3px;margin-top:2px}
 
-/* flow: 左に番号レール、右にステップ */
-.flow{display:grid;gap:0}
-.flow-step{display:flex;gap:12px;align-items:flex-start;position:relative;padding-bottom:14px}
-.flow-step:last-child{padding-bottom:0}
-.flow-step:not(:last-child)::before{
-  content:"";position:absolute;left:16px;top:34px;bottom:2px;width:3px;
-  background:repeating-linear-gradient(180deg,var(--ac) 0 6px,transparent 6px 11px);opacity:.6;
-}
-.flow-no{
-  flex:none;width:34px;height:34px;display:grid;place-items:center;z-index:1;
-  font-size:15px;font-weight:700;color:var(--paper);background:var(--ac);
-  border-radius:190px 12px 185px 13px/13px 180px 12px 195px;
-}
-.flow-body{padding-top:3px}
-.flow-body b{display:block;font-size:15px;line-height:1.5}
-.flow-body span{font-size:13px;color:var(--ink-soft);line-height:1.7}
-
-/* compare: 2カラム＋中央の矢印 */
-.cmp{display:flex;gap:12px;align-items:flex-start;justify-content:center;flex-wrap:wrap}
-.cmp-col{flex:1 1 220px;min-width:0}
-.cmp-col h5{
-  margin:0 0 10px;font-size:14px;text-align:center;padding:4px 10px;
-  border-radius:190px 12px 185px 13px/13px 180px 12px 195px;
-}
-.cmp-col.was h5{background:var(--ink-faint);color:var(--paper)}
-.cmp-col.now h5{background:var(--ac);color:var(--paper)}
-.cmp-item{
-  background:var(--card);border:2.2px solid var(--ink);margin-bottom:9px;
-  border-radius:180px 12px 175px 14px/14px 170px 12px 190px;padding:9px 12px;
-}
-.cmp-col.was .cmp-item{opacity:.72;border-style:dashed}
-.cmp-item b{display:block;font-size:14px}
-.cmp-item span{font-size:12.5px;color:var(--ink-soft);line-height:1.65}
-.cmp-mid{display:grid;place-items:center;flex:0 0 auto;align-self:center;color:var(--ac)}
-.cmp-mid .gr-arrow{display:none}
-@media (max-width:560px){
-  .cmp{flex-direction:column;align-items:stretch}
-  .cmp-mid .gr-arrow-r{display:none}
-  .cmp-mid .gr-arrow{display:block}
+/* compare: 左右2群 */
+.cmp{display:flex;align-items:stretch;justify-content:center;gap:10px;flex-wrap:wrap}
+.cmp-col{flex:1 1 248px;min-width:0;display:grid;gap:10px;align-content:start;justify-items:center;padding:14px 10px 16px;border:2.4px solid var(--ink);border-radius:2px}
+.cmp-col.was{background:var(--paper)}
+.cmp-col.now{background:var(--amber-wash)}
+.cmp-col h5{margin:0 0 6px;text-align:center}
+.cmp-col.was .tile-art::before{background:var(--rule)}
+.cmp-col.was .tile-art svg{color:var(--ink-soft)}
+.cmp-col.was .tile b{color:var(--ink-soft)}
+.cmp-mid{display:grid;place-items:center;flex:0 0 auto}
+.cmp-mid .tri{width:30px;height:30px;color:var(--amber-deep)}
+.cmp-mid .tri.down{display:none}
+@media (max-width:620px){
+  .cmp{flex-direction:column}
+  .cmp-mid .tri.right{display:none}
+  .cmp-mid .tri.down{display:block}
+  .strip{flex-direction:column;align-items:center}
+  .strip .tri{margin-top:0}
+  .strip .tri.right{display:none}
+  .strip .tri.down{display:block}
 }
 
 /* layers: 積み重ね */
-.layers{display:grid;gap:7px}
-.layer{
-  border:2.4px solid var(--ink);background:var(--card);
-  border-radius:190px 14px 185px 15px/15px 180px 14px 200px;
-  padding:11px 14px;box-shadow:2px 3px 0 var(--shadow);
-}
-.layer b{display:block;font-size:15px}
-.layer span{font-size:12.5px;color:var(--ink-soft);line-height:1.7}
-.layer:nth-child(1){background:color-mix(in srgb, var(--ac) 16%, var(--card));margin-inline:0}
-.layer:nth-child(2){margin-inline:3%}
-.layer:nth-child(3){margin-inline:6%}
-.layer:nth-child(4){margin-inline:9%}
-.layer:nth-child(5){margin-inline:12%}
-.layers-note{margin:8px 0 0;font-size:12px;color:var(--ink-faint);text-align:center}
-
-/* impact */
-.impacts{display:grid;gap:11px}
-.impact{display:flex;gap:11px;align-items:flex-start;flex-wrap:wrap}
-.impact-who{
-  flex:none;display:inline-flex;align-items:center;gap:5px;
-  font-size:13px;padding:3px 12px;color:var(--paper);background:var(--ac);
-  border-radius:190px 12px 185px 13px/13px 180px 12px 195px;white-space:nowrap;
-}
-.impact-what{flex:1 1 220px;font-size:14px;line-height:1.85;min-width:0}
-
-/* 用語メモ */
-.jargon{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,230px),1fr));gap:10px}
-.jargon div{
-  background:var(--note-green);color:var(--note-ink);padding:9px 12px;font-size:13px;line-height:1.7;
-  border-radius:4px 12px 6px 10px;box-shadow:2px 3px 0 var(--shadow);
-}
-.jargon div:nth-child(3n+2){background:var(--note-purple);transform:rotate(-.6deg)}
-.jargon div:nth-child(3n+3){background:var(--note-orange);transform:rotate(.5deg)}
-.jargon b{display:block;font-size:14px}
-
-.nextstep{
-  margin:22px 0 0;padding:13px 16px;font-size:14px;line-height:1.85;
-  border:2.6px solid var(--ac);border-radius:10px;background:var(--card-2);
-}
-.nextstep b{color:var(--ac)}
-.dive-src{margin:16px 0 0;font-size:12.5px;color:var(--ink-faint);word-break:break-word}
-.dive-src a{color:var(--ac)}
-
-/* ── アイコン ── */
-.ic{width:1.35em;height:1.35em;flex:none;vertical-align:-.3em}
-.ic-lg{width:30px;height:30px;flex:none}
-.ic-xl{width:40px;height:40px;flex:none}
+.layers{display:grid;gap:8px}
+.layer{display:flex;align-items:center;gap:12px;border:2.4px solid var(--ink);border-radius:2px;padding:11px 14px}
+.layer:nth-child(odd){background:var(--sky-wash)}
+.layer:nth-child(even){background:var(--amber-wash)}
+.layer > svg{width:32px;height:32px;flex:none;color:var(--amber-deep)}
+.layer > svg path{stroke-width:1.9}
+.layer b{font-size:14.5px;display:block;line-height:1.45}
+.layer em{font-style:normal;font-size:12.3px;color:var(--ink-soft);line-height:1.65;display:block}
+.layers-note{margin:12px 0 0;font-size:12px;color:var(--ink-faint);text-align:center}
 
 /* ── 数値の視覚化 ── */
-.metrics{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,250px),1fr));gap:14px}
-.metric{
-  background:var(--card-2);border:2.6px solid var(--ink);
-  border-radius:14px 190px 16px 195px/195px 16px 200px 14px;
-  padding:13px 15px 14px;box-shadow:3px 4px 0 var(--shadow);
-}
-.metric-head{display:flex;align-items:center;gap:8px;margin-bottom:9px;color:var(--ac)}
+.metrics{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,238px),1fr));gap:14px}
+.metric{border:2.6px solid var(--ink);border-radius:2px;padding:14px 15px;background:var(--paper)}
+.metric-head{display:flex;align-items:center;gap:9px;margin-bottom:11px}
+.metric-head > svg{width:30px;height:30px;flex:none;color:var(--amber-deep)}
+.metric-head > svg path{stroke-width:1.9}
 .metric-head b{font-size:14.5px;line-height:1.4}
-.metric-row{display:flex;align-items:center;gap:8px;margin-bottom:6px}
+.metric-row{display:flex;align-items:center;gap:8px;margin-bottom:7px}
 .metric-tag{flex:none;width:4.6em;font-size:11.5px;color:var(--ink-faint);text-align:right;white-space:nowrap}
-.metric-bar{flex:1;height:20px;min-width:0;position:relative}
-.metric-bar i{
-  position:absolute;left:0;top:0;bottom:0;display:block;min-width:18px;
-  border-radius:4px 14px 5px 12px;border:1.8px solid var(--ink);
-}
-.metric-bar.was i{background:transparent;border-style:dashed;opacity:.65}
-.metric-bar.now i{background:color-mix(in srgb, var(--ac) 45%, transparent)}
+.metric-bar{flex:1;height:19px;min-width:0;position:relative}
+.metric-bar i{position:absolute;left:0;top:0;bottom:0;display:block;min-width:16px;border:2.2px solid var(--ink)}
+.metric-bar.was i{background:var(--paper-2)}
+.metric-bar.now i{background:var(--amber)}
 .metric-val{font-size:13px;white-space:nowrap;flex:none;font-weight:700}
-.metric-delta{
-  display:inline-flex;align-items:center;gap:5px;margin-top:6px;font-size:12.5px;
-  padding:2px 11px;color:var(--paper);background:var(--ac);
-  border-radius:185px 11px 180px 12px/12px 175px 11px 190px;
-}
-.metric-big{display:flex;align-items:baseline;gap:5px;flex-wrap:wrap;margin:2px 0 0}
-.metric-big strong{font-size:clamp(26px,7vw,36px);line-height:1.15;color:var(--ac);font-weight:700}
+.metric-delta{display:inline-flex;align-items:center;gap:5px;margin-top:7px;font-size:12.5px;padding:1px 11px;color:var(--ink);background:var(--amber);border:2.2px solid var(--ink)}
+.metric-delta svg{width:15px;height:15px}
+.metric-big{display:flex;align-items:baseline;gap:5px;flex-wrap:wrap;margin:0}
+.metric-big strong{font-size:clamp(28px,7.4vw,40px);line-height:1.1;color:var(--amber-deep);font-weight:700}
 .metric-big span{font-size:14px;color:var(--ink-soft)}
-.metric-note{margin:5px 0 0;font-size:12px;color:var(--ink-faint);line-height:1.6}
+.metric-note{margin:6px 0 0;font-size:12px;color:var(--ink-faint);line-height:1.6}
 
-/* ── たとえ話のミニ図 ── */
-.analogy-strip{
-  display:flex;align-items:center;justify-content:center;gap:10px;flex-wrap:wrap;
-  margin:12px 0 2px;padding-top:11px;border-top:2.5px dashed rgba(0,0,0,.18);
-}
-:root[data-theme="dark"] .analogy-strip{border-top-color:rgba(255,255,255,.2)}
-@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .analogy-strip{border-top-color:rgba(255,255,255,.2)}}
-.analogy-strip figure{display:grid;justify-items:center;gap:3px;margin:0;font-size:12.5px;max-width:110px;text-align:center}
-.analogy-strip figure .ic-lg{color:var(--ac)}
-.analogy-strip .gr-arrow-r{width:52px;height:30px;color:var(--ac);opacity:1}
+/* ── 使われている技術 ── */
+.concepts{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,330px),1fr));gap:15px}
+.concept{display:flex;gap:13px;border:2.4px solid var(--ink);border-radius:2px;padding:14px 15px}
+.concept-art{position:relative;display:grid;place-items:center;width:58px;height:56px;flex:none}
+.concept-art::before{content:"";position:absolute;inset:2px 0;background:var(--tint);border-radius:48% 52% 54% 46%/55% 45% 58% 42%}
+.concept-art svg{position:relative;width:34px;height:34px;color:var(--amber-deep)}
+.concept-art svg path{stroke-width:1.9}
+.concept-txt{min-width:0}
+.concept-txt b{display:block;font-size:15.5px;line-height:1.45}
+.concept-txt .plain{display:block;font-size:12.5px;color:var(--sky-deep);margin-bottom:5px}
+.concept-txt p{margin:0;font-size:13.3px;line-height:1.85}
 
-/* ── 図版のアイコン ── */
-.flow-body b .ic,.cmp-item b .ic,.layer b .ic{margin-right:5px;color:var(--ac)}
-.cyc-loop{
-  display:flex;align-items:center;justify-content:center;gap:7px;margin-top:10px;
-  font-size:12.5px;color:var(--ac);
-}
-.cyc-loop .ic{width:1.5em;height:1.5em}
+/* ── 何が変わる？ ── */
+.impacts{display:grid;gap:12px}
+.impact{display:flex;gap:12px;align-items:center;flex-wrap:wrap;padding:11px 14px;background:var(--tint-wash);border:2.2px dashed var(--ink-soft);border-radius:2px}
+.impact-who{flex:none;display:inline-flex;align-items:center;gap:7px;font-size:13.5px;font-weight:700}
+.impact-who svg{width:26px;height:26px;color:var(--amber-deep)}
+.impact-who svg path{stroke-width:1.9}
+.impact-what{flex:1 1 230px;font-size:13.5px;line-height:1.85;min-width:0}
 
-/* ═══════════════ 一覧ページのカード ═══════════════ */
-.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,300px),1fr));gap:18px}
+/* ── 用語メモ ── */
+.jargon{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,225px),1fr));gap:11px}
+.jargon div{border-left:5px solid var(--sky);padding:4px 0 4px 11px;font-size:12.8px;line-height:1.7;color:var(--ink-soft)}
+.jargon b{display:block;font-size:14px;color:var(--ink)}
+
+.nextstep{margin:26px 0 0;padding:13px 16px;font-size:13.8px;line-height:1.85;border:2.6px solid var(--amber);background:var(--amber-wash)}
+.nextstep b{color:var(--amber-deep)}
+.dive-src{margin:14px 0 0;font-size:12px;color:var(--ink-faint);word-break:break-word}
+.dive-src a{color:var(--sky-deep)}
+
+/* ═══════════ 一覧ページ ═══════════ */
+.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,290px),1fr));gap:16px}
 .card{
-  position:relative;background:var(--card);border:2.6px solid var(--ink);
-  border-radius:230px 16px 220px 18px/18px 215px 16px 235px;
-  padding:16px 16px 14px;box-shadow:4px 5px 0 var(--shadow);
-  display:flex;flex-direction:column;gap:9px;
-  transition:transform .15s ease, box-shadow .15s ease;
+  background:var(--card);border:2.6px solid var(--ink);border-radius:2px;
+  padding:15px 15px 13px;box-shadow:4px 4px 0 var(--shadow);
+  display:flex;flex-direction:column;gap:8px;
+  transition:transform .12s ease, box-shadow .12s ease;
 }
-.card:nth-child(3n+1){transform:rotate(-.45deg)}
-.card:nth-child(3n+2){transform:rotate(.35deg)}
-.card:nth-child(3n+3){transform:rotate(-.2deg)}
-.card:hover{transform:rotate(0deg) translateY(-3px);box-shadow:6px 8px 0 var(--shadow)}
-.card.featured{border-color:var(--accent);box-shadow:4px 5px 0 var(--shadow),0 0 0 3px color-mix(in srgb,var(--accent) 22%,transparent)}
+.card:hover{transform:translate(-2px,-2px);box-shadow:6px 6px 0 var(--shadow)}
+.card.featured{border-color:var(--amber-deep);box-shadow:4px 4px 0 var(--amber)}
 .card-top{display:flex;align-items:flex-start;gap:10px}
-.gr-rank{width:44px;height:44px;flex:none;color:var(--accent)}
-.card-title{margin:0;font-size:16px;line-height:1.5;font-weight:700}
-.card-title a{text-decoration:none;background:linear-gradient(transparent 88%, var(--accent-2) 88%)}
-.card-title a:hover{background:linear-gradient(transparent 20%, color-mix(in srgb, var(--accent-3) 55%, transparent) 20%)}
-.card-orig{font-size:11.5px;color:var(--ink-faint);margin:0;word-break:break-word}
-.card-sum{margin:0;font-size:13.5px;color:var(--ink);line-height:1.7}
-.card-why{margin:0;font-size:12.5px;color:var(--ink-soft);border-left:3px dashed var(--accent-2);padding-left:9px}
-.card-foot{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-top:auto;padding-top:4px}
-.chip{font-size:11.5px;padding:2px 9px;border:1.8px solid var(--ink-soft);color:var(--ink-soft);
-  border-radius:180px 10px 180px 10px/10px 180px 10px 180px}
-.chip.src{border-color:var(--accent-2);color:var(--accent-2)}
-.chip.hn{border-color:var(--accent);color:var(--accent)}
-.chip.deep{border-color:var(--accent);color:var(--paper);background:var(--accent);text-decoration:none}
-.gr-meter{width:104px;height:15px;color:var(--ink-soft)}
-.gr-meter-fill{fill:var(--accent)}
-.meter-wrap{display:flex;align-items:center;gap:6px;font-size:11.5px;color:var(--ink-faint);margin-left:auto}
+.card-no{flex:none;width:30px;height:30px;display:grid;place-items:center;font-size:14px;font-weight:700;border:2.2px solid var(--ink);background:var(--amber-pale)}
+.card-title{margin:0;font-size:15.5px;line-height:1.5;font-weight:700}
+.card-title a{text-decoration:none;background:linear-gradient(transparent 86%, var(--sky) 86%)}
+.card-title a:hover{background:linear-gradient(transparent 20%, var(--amber-pale) 20%)}
+.card-orig{font-size:11px;color:var(--ink-faint);margin:0;word-break:break-word}
+.card-sum{margin:0;font-size:13.2px;line-height:1.75}
+.card-why{margin:0;font-size:12.3px;color:var(--ink-soft);border-left:4px solid var(--sky);padding-left:9px}
+.card-foot{display:flex;flex-wrap:wrap;align-items:center;gap:7px;margin-top:auto;padding-top:4px}
+.chip{font-size:11.2px;padding:1px 9px;border:1.8px solid var(--ink-faint);color:var(--ink-soft);border-radius:2px}
+.chip.src{border-color:var(--sky-deep);color:var(--sky-deep)}
+.chip.hn{border-color:var(--amber-deep);color:var(--amber-deep)}
+.chip.deep{border-color:var(--ink);color:var(--ink);background:var(--amber);text-decoration:none;font-weight:700}
+.gr-meter{width:100px;height:15px;color:var(--ink-faint)}
+.gr-meter-fill{fill:var(--amber)}
+.meter-wrap{display:flex;align-items:center;gap:6px;font-size:11.2px;color:var(--ink-faint);margin-left:auto}
 
-/* ── 情報源サマリ ── */
 .sources{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,190px),1fr));gap:10px}
-.source{border:2.2px dashed var(--ink-soft);border-radius:12px;padding:9px 12px;font-size:13px;background:var(--card)}
-.source b{display:block;font-size:13.5px}
-.source span{color:var(--ink-faint);font-size:12px}
-.source.err{border-color:var(--accent);color:var(--accent)}
+.source{border:2px dashed var(--ink-faint);border-radius:2px;padding:9px 12px;font-size:12.8px}
+.source b{display:block;font-size:13.2px}
+.source span{color:var(--ink-faint);font-size:11.8px}
+.source.err{border-color:var(--amber-deep);color:var(--amber-deep)}
 
-/* ── アーカイブ ── */
-.archive{display:flex;flex-wrap:wrap;gap:8px}
-.archive a{
-  font-size:13px;text-decoration:none;padding:5px 12px;background:var(--card);
-  border:2.2px solid var(--ink);box-shadow:2px 2px 0 var(--shadow);
-  border-radius:190px 12px 190px 12px/12px 190px 12px 190px;
-}
-.archive a[aria-current="page"]{background:var(--accent-3);color:var(--note-ink)}
+.archive{display:flex;flex-wrap:wrap;gap:8px;justify-content:center}
+.archive a{font-size:12.8px;text-decoration:none;padding:4px 12px;border:2.2px solid var(--ink);box-shadow:2px 2px 0 var(--shadow);border-radius:2px}
+.archive a[aria-current="page"]{background:var(--amber);font-weight:700}
 
-/* ── ページ間の導線 ── */
-.crossnav{
-  margin:44px 0 0;padding:20px;text-align:center;background:var(--card);
-  border:3px solid var(--ink);box-shadow:5px 6px 0 var(--shadow);
-  border-radius:230px 18px 225px 20px/20px 215px 18px 235px;
-}
-.crossnav p{margin:0 0 12px;font-size:15px}
-.crossnav .pill{font-size:14.5px;padding:8px 18px}
+.crossnav{margin:46px 0 0;padding:22px;text-align:center;border:3px solid var(--ink);border-radius:3px;background:var(--sky-wash);box-shadow:6px 6px 0 var(--shadow)}
+.crossnav p{margin:0 0 14px;font-size:14.5px}
+.crossnav .pill{font-size:14.5px;padding:8px 18px;background:var(--paper)}
 
-footer{margin-top:44px;text-align:center;color:var(--ink-faint);font-size:12px;line-height:1.9}
-footer a{color:var(--accent-2)}
+footer{margin-top:48px;text-align:center;color:var(--ink-faint);font-size:11.8px;line-height:1.9}
+footer a{color:var(--sky-deep)}
 
 @media (prefers-reduced-motion: reduce){*{transition:none!important}}
+@media (max-width:640px){
+  .hero-grid{grid-template-columns:1fr}
+  /* 集中線は .sun を基準に描くので、静的配置にしても position:relative を保つ */
+  .sun{position:relative;left:auto;top:auto;transform:none;order:-1;margin:0 auto 14px;width:178px;height:178px}
+  .q,
+  .q:nth-of-type(1),.q:nth-of-type(2),.q:nth-of-type(3),.q:nth-of-type(4){
+    padding:15px 2px;min-height:0;border:0;border-bottom:2px solid var(--rule);
+  }
+  .q:last-of-type{border-bottom:0}
+}
 @media (max-width:430px){
   .wrap{padding:14px 12px 48px}
-  .hero-bubble{padding:18px 15px 20px;border-radius:180px 14px 175px 16px/16px 170px 14px 185px}
-  .dive{padding:18px 14px 20px;border-radius:180px 16px 175px 18px/18px 170px 16px 190px}
-  .card{padding:14px 13px 12px}
-  .gr-rank{width:38px;height:38px}
-  .meter-wrap{margin-left:0}
-  .layer:nth-child(n){margin-inline:0}
+  .dive{padding:20px 14px 22px}
+  .tile{flex-basis:auto;width:100%}
+  .tile-art{width:78px;height:70px}
+  .concept{flex-direction:column;gap:8px}
 }
 `;
 
 // ─────────────────────────────────────────────
-// 図版（3種）
+// 図版
 // ─────────────────────────────────────────────
+function tile(n) {
+  return `<figure class="tile">
+            <span class="tile-art">${icon(n.icon || 'box', '')}</span>
+            <figcaption><b>${esc(n.label)}</b>${n.note ? `<span>${esc(n.note)}</span>` : ''}</figcaption>
+          </figure>`;
+}
+
 function renderDiagram(d) {
   if (!d) return '';
   let body = '';
 
-  const label = (n) => `${n.icon ? icon(n.icon) : ''}${esc(n.label)}`;
-
   if (d.type === 'flow' || d.type === 'cycle') {
-    body = `<div class="flow">
-${d.nodes
-  .map(
-    (n, i) => `        <div class="flow-step">
-          <div class="flow-no">${i + 1}</div>
-          <div class="flow-body"><b>${label(n)}</b>${n.note ? `<span>${esc(n.note)}</span>` : ''}</div>
-        </div>`
-  )
-  .join('\n')}
-      </div>${
-        d.type === 'cycle'
-          ? `\n      <p class="cyc-loop">${icon('refresh')}最後まで進んだら、また 1 に戻って繰り返します</p>`
-          : ''
-      }`;
+    const parts = [];
+    d.nodes.forEach((n, i) => {
+      if (i > 0) parts.push(`${tri('right')}${tri('down')}`);
+      parts.push(tile(n));
+    });
+    body = `<div class="strip">${parts.join('\n          ')}</div>${
+      d.type === 'cycle'
+        ? `\n        <div class="cyc-back">${loopArrow()}<span>最後まで進んだら、また 1 に戻って繰り返します</span></div>`
+        : ''
+    }`;
   } else if (d.type === 'compare') {
     const col = (side, data) => `<div class="cmp-col ${side}">
-          <h5>${esc(data.title)}</h5>
-${data.nodes
-  .map((n) => `          <div class="cmp-item"><b>${label(n)}</b>${n.note ? `<span>${esc(n.note)}</span>` : ''}</div>`)
-  .join('\n')}
-        </div>`;
+            <h5>${ribbon(data.title, side === 'was' ? 'sm sky' : 'sm')}</h5>
+            ${data.nodes.map(tile).join('\n            ')}
+          </div>`;
     body = `<div class="cmp">
-        ${col('was', d.before)}
-        <div class="cmp-mid">${arrowRight()}${arrowDown()}</div>
-        ${col('now', d.after)}
-      </div>`;
+          ${col('was', d.before)}
+          <div class="cmp-mid">${tri('right')}${tri('down')}</div>
+          ${col('now', d.after)}
+        </div>`;
   } else if (d.type === 'layers') {
     // データは下から上の順。表示は上が最上位になるよう反転する。
-    const stacked = [...d.nodes].reverse();
     body = `<div class="layers">
-${stacked
-  .map((n) => `        <div class="layer"><b>${label(n)}</b>${n.note ? `<span>${esc(n.note)}</span>` : ''}</div>`)
+${[...d.nodes]
+  .reverse()
+  .map(
+    (n) => `          <div class="layer">${icon(n.icon || 'stack', '')}<span><b>${esc(n.label)}</b>${
+      n.note ? `<em>${esc(n.note)}</em>` : ''
+    }</span></div>`
+  )
   .join('\n')}
-      </div>
-      <p class="layers-note">↑ 上にあるものほど、下のものの上に成り立っています</p>`;
+        </div>
+        <p class="layers-note">↑ 上にあるものほど、下のものの上に成り立っています</p>`;
   } else {
     return '';
   }
 
   return `      <div class="fig">
-        ${d.title ? `<p class="fig-title">${esc(d.title)}</p>` : ''}
+        ${d.title ? `<p class="fig-title">${ribbon(d.title, 'sm sky')}</p>` : ''}
         ${body}
         ${d.caption ? `<p class="fig-cap">${esc(d.caption)}</p>` : ''}
       </div>`;
@@ -541,11 +459,11 @@ ${stacked
 // 数値の視覚化
 // ─────────────────────────────────────────────
 function renderMetric(m) {
-  const head = `<div class="metric-head">${m.icon ? icon(m.icon, 'ic ic-lg') : ''}<b>${esc(m.label)}</b></div>`;
+  const head = `<div class="metric-head">${icon(m.icon || 'chart', '')}<b>${esc(m.label)}</b></div>`;
 
   if (m.kind === 'delta') {
     const max = Math.max(m.before, m.after) || 1;
-    const pct = (v) => `${Math.max(6, Math.round((v / max) * 100))}%`;
+    const pct = (v) => `${Math.max(7, Math.round((v / max) * 100))}%`;
     return `        <div class="metric">
           ${head}
           <div class="metric-row">
@@ -558,7 +476,7 @@ function renderMetric(m) {
             <span class="metric-bar now"><i style="width:${pct(m.after)}"></i></span>
             <span class="metric-val">${esc(jpNumber(m.after))}${esc(m.unit)}</span>
           </div>
-          <span class="metric-delta">${icon(m.delta.kind === 'reduce' ? 'down' : 'up')}${esc(m.delta.text)}</span>
+          <span class="metric-delta">${icon(m.delta.kind === 'reduce' ? 'down' : 'up', '')}${esc(m.delta.text)}</span>
           ${m.note ? `<p class="metric-note">${esc(m.note)}</p>` : ''}
         </div>`;
   }
@@ -574,32 +492,29 @@ function renderMetric(m) {
 // 深掘り1本
 // ─────────────────────────────────────────────
 function renderDive(d, i) {
-  const accent = ACCENTS[i % ACCENTS.length];
   return `
-    <article class="dive ${accent}" id="dive-${esc(d.id)}">
+    <article class="dive ${TINTS[i % TINTS.length]}" id="dive-${esc(d.id)}">
       <div class="dive-top">
         <div class="dive-no">${i + 1}</div>
-        ${d.icon ? `<span class="ic-xl" style="color:var(--ac)">${icon(d.icon, 'ic-xl')}</span>` : ''}
-        <div>
-          <h3 class="dive-head">${esc(d.headline)}</h3>
-          <p class="dive-meta">${esc(d.sourceLabel)}・${esc(jstLabel(d.publishedAt))}・原題: ${esc(d.originalTitle)}</p>
-        </div>
+        <span class="dive-art">${icon(d.icon || 'sparkle', '')}</span>
+        <h3 class="dive-head">${esc(d.headline)}</h3>
       </div>
+      <p class="dive-meta">${esc(d.sourceLabel)}・${esc(jstLabel(d.publishedAt))}・原題: ${esc(d.originalTitle)}</p>
 
       <p class="dive-hook">${esc(d.hook)}</p>
 
       ${
         d.background.body || d.analogy.body
           ? `<div class="two">
-        ${d.background.body ? `<div class="panel bg"><b>${esc(d.background.title)}</b>${esc(d.background.body)}</div>` : ''}
+        ${d.background.body ? `<div class="panel bg"><b>${esc(d.background.title)}</b><p>${esc(d.background.body)}</p></div>` : ''}
         ${
           d.analogy.body
-            ? `<div class="panel an"><b>${esc(d.analogy.title)}</b>${esc(d.analogy.body)}${
+            ? `<div class="panel an"><b>${esc(d.analogy.title)}</b><p>${esc(d.analogy.body)}</p>${
                 d.analogy.fromIcon && d.analogy.toIcon
                   ? `<div class="analogy-strip">
-            <figure>${icon(d.analogy.fromIcon, 'ic ic-lg')}<figcaption>${esc(d.analogy.fromLabel)}</figcaption></figure>
-            ${arrowRight()}
-            <figure>${icon(d.analogy.toIcon, 'ic ic-lg')}<figcaption>${esc(d.analogy.toLabel)}</figcaption></figure>
+            <figure><span class="tile-art">${icon(d.analogy.fromIcon, '')}</span><figcaption>${esc(d.analogy.fromLabel)}</figcaption></figure>
+            ${tri('right')}
+            <figure><span class="tile-art">${icon(d.analogy.toIcon, '')}</span><figcaption>${esc(d.analogy.toLabel)}</figcaption></figure>
           </div>`
                   : ''
               }</div>`
@@ -611,29 +526,27 @@ function renderDive(d, i) {
 
       ${
         d.metrics?.length
-          ? `<div class="dd-sub"><h4>数字で見る</h4><div class="r"></div></div>
+          ? `<div class="sec-l">${ribbon('数字で見る', 'sm')}</div>
       <div class="metrics">
 ${d.metrics.map(renderMetric).join('\n')}
       </div>`
           : ''
       }
 
-      ${
-        d.diagram
-          ? `<div class="dd-sub"><h4>図で見る</h4><div class="r"></div></div>
-${renderDiagram(d.diagram)}`
-          : ''
-      }
+      ${d.diagram ? `<div class="sec-l">${ribbon('図で見る', 'sm')}</div>\n${renderDiagram(d.diagram)}` : ''}
 
       ${
         d.concepts.length
-          ? `<div class="dd-sub"><h4>使われている技術</h4><div class="r"></div></div>
+          ? `<div class="sec-l">${ribbon('使われている技術', 'sm')}</div>
       <div class="concepts">
 ${d.concepts
   .map(
     (c) => `        <div class="concept">
-          <div class="term">${c.icon ? icon(c.icon, 'ic ic-lg') : ''}<b>${esc(c.term)}</b><span class="plain">${esc(c.plain)}</span></div>
-          ${c.detail ? `<p>${esc(c.detail)}</p>` : ''}
+          <span class="concept-art">${icon(c.icon || 'gear', '')}</span>
+          <div class="concept-txt">
+            <b>${esc(c.term)}</b><span class="plain">${esc(c.plain)}</span>
+            ${c.detail ? `<p>${esc(c.detail)}</p>` : ''}
+          </div>
         </div>`
   )
   .join('\n')}
@@ -643,11 +556,11 @@ ${d.concepts
 
       ${
         d.impact.length
-          ? `<div class="dd-sub"><h4>何が変わる？</h4><div class="r"></div></div>
+          ? `<div class="sec-l">${ribbon('何が変わる？', 'sm')}</div>
       <div class="impacts">
 ${d.impact
   .map(
-    (im) => `        <div class="impact"><span class="impact-who">${im.icon ? icon(im.icon) : ''}${esc(im.who)}</span><span class="impact-what">${esc(im.what)}</span></div>`
+    (im) => `        <div class="impact"><span class="impact-who">${icon(im.icon || 'user', '')}${esc(im.who)}</span><span class="impact-what">${esc(im.what)}</span></div>`
   )
   .join('\n')}
       </div>`
@@ -656,7 +569,7 @@ ${d.impact
 
       ${
         d.jargon.length
-          ? `<div class="dd-sub"><h4>用語メモ</h4><div class="r"></div></div>
+          ? `<div class="sec-l">${ribbon('用語メモ', 'sm')}</div>
       <div class="jargon">
 ${d.jargon.map((j) => `        <div><b>${esc(j.term)}</b>${esc(j.plain)}</div>`).join('\n')}
       </div>`
@@ -679,7 +592,7 @@ function renderCard(t, featuredSet, explainHref) {
   return `
       <article class="card${isFeatured ? ' featured' : ''}">
         <div class="card-top">
-          ${rankBadge(t.rank)}
+          <div class="card-no">${t.rank}</div>
           <div>
             <h3 class="card-title"><a href="${esc(t.url)}" target="_blank" rel="noopener noreferrer">${esc(title)}</a></h3>
             ${showOriginal ? `<p class="card-orig">原題: ${esc(t.title)}</p>` : ''}
@@ -768,8 +681,7 @@ ${body}
 function masthead(report, subtitle) {
   return `
   <header class="masthead">
-    <h1><span class="mark">AI業界トレンド</span><br>週次グラレコ</h1>
-    ${squiggle(280)}
+    <h1><span class="hl">AI業界トレンド</span> 週次グラレコ</h1>
     <p class="period">${esc(jstLabel(report.since))} 〜 ${esc(jstLabel(report.until))} ／ ${esc(subtitle)}</p>
   </header>`;
 }
@@ -777,12 +689,44 @@ function masthead(report, subtitle) {
 function archiveNav(archive, current, suffix) {
   if (archive.length <= 1) return '';
   return `
-  <div class="section-head"><h2>バックナンバー</h2><div class="rule"></div></div>
+  <div class="sec">${ribbon('バックナンバー', 'sm')}</div>
   <nav class="archive">
     ${archive
       .map((d) => `<a href="./${esc(d)}${suffix}.html"${d === current ? ' aria-current="page"' : ''}>${esc(d)}</a>`)
       .join('\n    ')}
   </nav>`;
+}
+
+/** 中央に「今週の要点」、周囲に4象限 */
+function heroBlock(report) {
+  const points = (
+    report.keyPoints?.length
+      ? report.keyPoints
+      : report.topTags.slice(0, 4).map((t) => ({ label: `#${t.tag}`, text: `今週 ${t.count} 件が該当`, icon: 'list' }))
+  ).slice(0, 4);
+
+  return `
+  <section class="hero">
+    <div class="hero-grid">
+      ${points
+        .map((k) => {
+          const label = typeof k === 'string' ? '' : k.label ?? '';
+          const text = typeof k === 'string' ? k : k.text ?? '';
+          const ic = typeof k === 'string' ? '' : k.icon ?? '';
+          return `<div class="q">${icon(ic || 'bulb', 'q-icon')}<b>${esc(label)}</b><span>${esc(text)}</span></div>`;
+        })
+        .join('\n      ')}
+      <div class="sun">
+        ${sunburst()}
+        <div class="sun-core"><div><b>今週の要点</b><span>${esc(jstLabel(report.since))}〜${esc(jstLabel(report.until))}</span></div></div>
+      </div>
+    </div>
+    <p class="hero-head">${esc(report.headline)}</p>
+    ${report.summaryJa ? `<p class="hero-sum">${esc(report.summaryJa)}</p>` : ''}
+    <div class="tagrow">
+      ${report.topTags.map((t) => `<span class="tagbubble">#${esc(t.tag)}<small>${t.count}</small></span>`).join('\n      ')}
+    </div>
+  </section>`;
 }
 
 // ─────────────────────────────────────────────
@@ -791,39 +735,16 @@ function archiveNav(archive, current, suffix) {
 export function renderExplainPage(report, { archive = [], current = null } = {}) {
   const dives = report.deepDives ?? [];
   const listHref = `./${current}-list.html`;
-  const keyPoints = report.keyPoints?.length
-    ? report.keyPoints
-    : report.topTags.slice(0, 4).map((t) => ({ label: `#${t.tag}`, text: `今週 ${t.count} 件が該当` }));
 
   const body = `
 ${masthead(report, `${report.collectedCount} 件から ${dives.length} 本をくわしく解説`)}
+${heroBlock(report)}
 
-  <section class="hero" aria-labelledby="heroHead">
-    <div class="hero-bubble">
-      <span class="hero-label">今週の要点</span>
-      <p class="hero-head" id="heroHead">${esc(report.headline)}</p>
-      ${report.summaryJa ? `<p class="hero-sum">${esc(report.summaryJa)}</p>` : ''}
-    </div>
-    ${arrowDown()}
-    <div class="notes">
-      ${keyPoints
-        .map((k) => {
-          const label = typeof k === 'string' ? '' : k.label ?? '';
-          const text = typeof k === 'string' ? k : k.text ?? '';
-          return `<div class="note">${label ? `<b>${esc(label)}</b>` : ''}${esc(text)}</div>`;
-        })
-        .join('\n      ')}
-    </div>
-    <div class="tagrow">
-      ${report.topTags.map((t) => `<span class="tagbubble">#${esc(t.tag)}<small>${t.count}</small></span>`).join('\n      ')}
-    </div>
-  </section>
-
-  <div class="section-head"><h2>今週のニュースを読み解く</h2><div class="rule"></div></div>
+  <div class="sec">${ribbon('今週のニュースを読み解く')}</div>
   ${
     dives.length
       ? dives.map(renderDive).join('\n')
-      : `<p style="font-size:14px;color:var(--ink-soft)">今週は深掘り解説を生成できませんでした。トピック一覧をご覧ください。</p>`
+      : `<p style="font-size:14px;color:var(--ink-soft);text-align:center">今週は深掘り解説を生成できませんでした。トピック一覧をご覧ください。</p>`
   }
 
   <div class="crossnav">
@@ -862,12 +783,12 @@ ${masthead(report, `${report.collectedCount} 件を収集し ${report.topics.len
     <a class="pill" href="${esc(explainHref)}">← くわしい解説を読む</a>
   </div>
 
-  <div class="section-head"><h2>今週のトピック</h2><div class="rule"></div></div>
+  <div class="sec">${ribbon('今週のトピック')}</div>
   <div class="cards">
 ${report.topics.map((t) => renderCard(t, featuredSet, explainHref)).join('\n')}
   </div>
 
-  <div class="section-head"><h2>収集メモ</h2><div class="rule"></div></div>
+  <div class="sec">${ribbon('収集メモ', 'sm')}</div>
   <div class="sources">
     ${report.sourceStats
       .map(
