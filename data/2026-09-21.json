@@ -1,0 +1,637 @@
+{
+  "runDate": "2026-09-21",
+  "windowDays": 7,
+  "since": "2026-09-13T22:00:00.000Z",
+  "until": "2026-09-21T07:25:33.241Z",
+  "generatedAt": "2026-09-21T07:28:56.151Z",
+  "headline": "AIエージェントが「試す」から「本番で回す」段階へ",
+  "summaryJa": "今週は主要ベンダーがそろってエージェントの実行基盤を強化した。AWSはAgentCoreの新ランタイムとSageMakerの推論ゲートウェイで起動と遅延の課題に手を入れ、Kimi K3やClaude Fable 5.1といった新モデルが実務ツールに次々と載った。一方で、コーディングエージェントがGit履歴を無断送信していた事例や学習データを巡る訴訟資料の公開など、使う側のガバナンスを問う話題も同時に噴き出した週だった。",
+  "keyPoints": [
+    {
+      "label": "実行基盤の刷新",
+      "text": "AgentCore新ランタイムとHyperPod推論GWで、起動の遅さと推論遅延に正面から対処"
+    },
+    {
+      "label": "新モデル一斉投入",
+      "text": "Kimi K3がBedrockに、Claude Fable 5.1がKiroに。長文脈とコーディング特化が主戦場"
+    },
+    {
+      "label": "開発ツールのリスク",
+      "text": "コーディングエージェントがGit履歴ごと外部送信していた事例が判明。導入前の検証が必須に"
+    },
+    {
+      "label": "安全性の枠組み",
+      "text": "Anthropicは外部評価者の常駐提携、OpenAIはミスアラインメント開示の枠組みを公開"
+    }
+  ],
+  "topTags": [
+    {
+      "tag": "開発",
+      "count": 11
+    },
+    {
+      "tag": "エージェント",
+      "count": 10
+    },
+    {
+      "tag": "モデル",
+      "count": 8
+    },
+    {
+      "tag": "研究",
+      "count": 7
+    },
+    {
+      "tag": "クラウド",
+      "count": 6
+    }
+  ],
+  "sourceStats": [
+    {
+      "id": "anthropic",
+      "label": "Anthropic News",
+      "fetched": 10,
+      "kept": 2,
+      "error": null
+    },
+    {
+      "id": "openai",
+      "label": "OpenAI News",
+      "fetched": 1210,
+      "kept": 11,
+      "error": null
+    },
+    {
+      "id": "aws-ml",
+      "label": "AWS Machine Learning Blog",
+      "fetched": 20,
+      "kept": 20,
+      "error": null
+    },
+    {
+      "id": "aws-jp-ml",
+      "label": "AWS ML Blog (日本語)",
+      "fetched": 20,
+      "kept": 0,
+      "error": null
+    },
+    {
+      "id": "aws-jp-news",
+      "label": "AWS Japan Blog",
+      "fetched": 10,
+      "kept": 10,
+      "error": null
+    },
+    {
+      "id": "qiita",
+      "label": "Qiita (tag: AI)",
+      "fetched": 16,
+      "kept": 12,
+      "error": null
+    },
+    {
+      "id": "zenn",
+      "label": "Zenn (topic: AI)",
+      "fetched": 20,
+      "kept": 20,
+      "error": null
+    },
+    {
+      "id": "hackernews",
+      "label": "Hacker News",
+      "fetched": 84,
+      "kept": 71,
+      "error": null
+    }
+  ],
+  "collectedCount": 146,
+  "curatedCount": 24,
+  "topics": [
+    {
+      "id": "hackernews-103",
+      "sourceId": "hackernews",
+      "sourceLabel": "Hacker News",
+      "sourceCategory": "community",
+      "lang": "en",
+      "url": "https://typesafe.ai/blog/introducing-system-one-models-and-jev",
+      "publishedAt": "2026-09-15T19:25:03.000Z",
+      "author": "@albelfio",
+      "title": "Introducing System One Models and Jev",
+      "titleJa": "System One モデルと「Jev」を発表",
+      "summaryJa": "Typesafe.ai が新クラスのAI「System One モデル」と初の製品 Jev を早期公開。逐次のトークン生成ではなく型安全な構造化値を確率スコア付きで並列出力し、応答70〜500ms、入力$0.042/百万トークン、出力は無料、ハルシネーション率0%を主張。",
+      "whyJa": "LLMの逐次生成という前提を覆す新モデル分類",
+      "tags": [
+        "モデル",
+        "開発"
+      ],
+      "score": 95,
+      "curatedBy": "subagent",
+      "points": 1930,
+      "comments": 509,
+      "discussionUrl": "https://news.ycombinator.com/item?id=49717558",
+      "rank": 1
+    },
+    {
+      "id": "aws-ml-15",
+      "sourceId": "aws-ml",
+      "sourceLabel": "AWS Machine Learning Blog",
+      "sourceCategory": "vendor",
+      "lang": "en",
+      "url": "https://aws.amazon.com/blogs/machine-learning/introducing-kimi-k3-on-amazon-bedrock",
+      "publishedAt": "2026-09-18T16:52:01.000Z",
+      "author": "Alex Thewsey",
+      "title": "Introducing Kimi K3 on Amazon Bedrock",
+      "titleJa": "Kimi K3がAmazon Bedrockで提供開始",
+      "summaryJa": "Moonshot AIのKimi K3がAmazon Bedrockで利用可能に。コーディングと知識作業向けの新しいオープンウェイトモデルで、ネイティブのビジョン対応、100万トークンのコンテキストウィンドウ、明示的なプロンプトキャッシュによる遅延と入力コストの削減を備える。",
+      "whyJa": "主要クラウドで長文脈のオープンウェイト新モデルが使える",
+      "tags": [
+        "モデル",
+        "クラウド"
+      ],
+      "score": 88,
+      "curatedBy": "subagent",
+      "rank": 2
+    },
+    {
+      "id": "aws-jp-news-43",
+      "sourceId": "aws-jp-news",
+      "sourceLabel": "AWS Japan Blog",
+      "sourceCategory": "vendor",
+      "lang": "ja",
+      "url": "https://aws.amazon.com/jp/blogs/news/fable-5-1",
+      "publishedAt": "2026-09-17T19:45:31.000Z",
+      "author": "稲田大陸",
+      "title": "Claude Fable 5.1 が Kiro で利用可能になりました",
+      "titleJa": "Claude Fable 5.1 が Kiro で利用可能になりました",
+      "summaryJa": "Claude Fable 5.1 が Kiro のエンタープライズ顧客向けに提供開始。長時間かつコンテキスト量の多いエージェントセッションで新基準を打ち立て、症状の列挙ではなくコードの根本原因まで問題を追跡し、複雑なタスク全体でコンテキストと意図を保持するとしている。",
+      "whyJa": "主要コーディング環境への新モデル投入の正式発表",
+      "tags": [
+        "モデル",
+        "エージェント",
+        "開発"
+      ],
+      "score": 88,
+      "curatedBy": "subagent",
+      "rank": 3
+    },
+    {
+      "id": "aws-ml-17",
+      "sourceId": "aws-ml",
+      "sourceLabel": "AWS Machine Learning Blog",
+      "sourceCategory": "vendor",
+      "lang": "en",
+      "url": "https://aws.amazon.com/blogs/machine-learning/the-new-agentcore-runtime-elastic-optimized-and-consistently-fast-starts",
+      "publishedAt": "2026-09-18T15:31:34.000Z",
+      "author": "Evandro Franco",
+      "title": "The new AgentCore runtime: Elastic, optimized, and consistently fast starts",
+      "titleJa": "新しいAgentCoreランタイム：弾力的で最適化され、一貫して高速な起動",
+      "summaryJa": "AWSがAmazon Bedrock AgentCoreの新ランタイムを発表。本番エージェントに求められる速度・柔軟性・コスト効率を狙い、セッション解放時にメモリを回収するほか、イメージサイズや同時実行数によらず一貫したコールドスタートを実現するとしている。",
+      "whyJa": "本番エージェント実行基盤の前提が変わる正式発表",
+      "tags": [
+        "エージェント",
+        "クラウド"
+      ],
+      "score": 86,
+      "curatedBy": "subagent",
+      "rank": 4
+    },
+    {
+      "id": "anthropic-2",
+      "sourceId": "anthropic",
+      "sourceLabel": "Anthropic News",
+      "sourceCategory": "vendor",
+      "lang": "en",
+      "url": "https://www.anthropic.com/news/life-sciences-verification-program",
+      "publishedAt": "2026-09-17T00:00:00.000Z",
+      "author": "Anthropic",
+      "title": "Introducing the Life Sciences Verification Program",
+      "titleJa": "Anthropic、生命科学向け「Life Sciences Verification Program」を開始",
+      "summaryJa": "Anthropicは9月17日、審査を通過した生命科学の専門家にMythos・Opus・Sonnetを生物学研究向けに安全制御を緩和した形で提供するプログラムを発表。標準利用は年次、高リスク利用は6カ月ごとの更新で、Enterprise/Teamプランから利用でき、既に数十組織が早期導入済み。",
+      "whyJa": "バイオ研究向けに制限を条件付き解除する初の公式枠組み",
+      "tags": [
+        "安全性",
+        "研究",
+        "モデル"
+      ],
+      "score": 86,
+      "curatedBy": "subagent",
+      "rank": 5
+    },
+    {
+      "id": "openai-5",
+      "sourceId": "openai",
+      "sourceLabel": "OpenAI News",
+      "sourceCategory": "vendor",
+      "lang": "en",
+      "url": "https://openai.com/index/astra-for-law",
+      "publishedAt": "2026-09-17T00:00:00.000Z",
+      "author": "",
+      "title": "Introducing Astra for Law",
+      "titleJa": "OpenAI、法務特化の「Astra for Law」を発表",
+      "summaryJa": "OpenAIが法務向けサービス「Astra for Law」を発表。フロンティアモデルの知能に加え、法律事務所ごとのカスタムワークフロー、法務データソースとの接続、機密性の高い依頼案件に対応する法務水準の管理機能を提供する。",
+      "whyJa": "主要ベンダーが業種特化サービスに本格参入",
+      "tags": [
+        "モデル",
+        "ビジネス"
+      ],
+      "score": 86,
+      "curatedBy": "subagent",
+      "rank": 6
+    },
+    {
+      "id": "aws-ml-19",
+      "sourceId": "aws-ml",
+      "sourceLabel": "AWS Machine Learning Blog",
+      "sourceCategory": "vendor",
+      "lang": "en",
+      "url": "https://aws.amazon.com/blogs/machine-learning/introducing-amazon-sagemaker-hyperpod-inference-gateway",
+      "publishedAt": "2026-09-18T13:08:34.000Z",
+      "author": "Vinay Arora",
+      "title": "Introducing Amazon SageMaker HyperPod Inference Gateway",
+      "titleJa": "Amazon SageMaker HyperPod Inference Gatewayの提供開始",
+      "summaryJa": "Amazon EKS向けのKubernetesネイティブでGPUを考慮したルーティングアドオン、SageMaker HyperPod Inference Gatewayが登場。リアルタイムのGPUシグナルで各推論リクエストを最適なPodへ送り、モデルサーバーやクライアントの変更なしに初回トークン遅延を最大82%削減する。",
+      "whyJa": "既存構成のまま推論遅延を大幅短縮できる新機能",
+      "tags": [
+        "クラウド",
+        "開発",
+        "ハードウェア"
+      ],
+      "score": 85,
+      "curatedBy": "subagent",
+      "rank": 7
+    },
+    {
+      "id": "anthropic-1",
+      "sourceId": "anthropic",
+      "sourceLabel": "Anthropic News",
+      "sourceCategory": "vendor",
+      "lang": "en",
+      "url": "https://www.anthropic.com/news/accenture-embedded-evaluation",
+      "publishedAt": "2026-09-18T00:00:00.000Z",
+      "author": "Anthropic",
+      "title": "Partnering with Accenture on embedded evaluation",
+      "titleJa": "AnthropicとAccenture、社内常駐型のモデル評価で提携",
+      "summaryJa": "Anthropicは9月18日、Accenture傘下Facultyと提携し、社員並みのアクセス権を持つ「埋め込み型評価者」がモデル評価・レッドチーミング・アラインメント検証・安全機構の試験を行うと発表。両社は5年で計10億ドル以上を拠出し、非独占でMETRなど評価者の追加も予定する。",
+      "whyJa": "外部評価を開発現場に常駐させる新しい安全ガバナンス",
+      "tags": [
+        "安全性",
+        "ビジネス",
+        "研究"
+      ],
+      "score": 84,
+      "curatedBy": "subagent",
+      "rank": 8
+    },
+    {
+      "id": "openai-7",
+      "sourceId": "openai",
+      "sourceLabel": "OpenAI News",
+      "sourceCategory": "vendor",
+      "lang": "en",
+      "url": "https://openai.com/index/reimagining-advertising-with-ai",
+      "publishedAt": "2026-09-16T13:00:00.000Z",
+      "author": "",
+      "title": "Reimagining advertising with AI",
+      "titleJa": "OpenAI、AIによる新しい広告体験を発表",
+      "summaryJa": "OpenAIがAIを活用した新しい広告の仕組みを発表。エージェントが広告を担う「Sponsored Agents」、マーケター向けツール群、HubSpotおよびShopifyとの連携が含まれる。",
+      "whyJa": "OpenAIの収益モデルが広告へ広がる転換点",
+      "tags": [
+        "ビジネス",
+        "エージェント"
+      ],
+      "score": 84,
+      "curatedBy": "subagent",
+      "rank": 9
+    },
+    {
+      "id": "hackernews-87",
+      "sourceId": "hackernews",
+      "sourceLabel": "Hacker News",
+      "sourceCategory": "community",
+      "lang": "en",
+      "url": "https://tokenstead.ai/guides/zcode-silent-git-history-upload",
+      "publishedAt": "2026-09-18T10:35:28.000Z",
+      "author": "@cdnsteve",
+      "title": "ZCode, the GLM coding agent, silently uploads your Git history",
+      "titleJa": "GLM のコーディングエージェント ZCode が Git 履歴を無断アップロード",
+      "summaryJa": "解析により ZCode がワークスペースを .git ごと暗号化し Aliyun OSS へ送信すると判明。345MB の環境が42,411ファイル・313MB の書庫になり、86.6%が Git オブジェクトで削除済みAPIキーや未pushブランチを含む。復号鍵は Z.ai 側のみ。",
+      "whyJa": "AI開発ツール経由の機密流出の具体例と回避策",
+      "tags": [
+        "安全性",
+        "エージェント",
+        "開発"
+      ],
+      "score": 82,
+      "curatedBy": "subagent",
+      "points": 261,
+      "comments": 14,
+      "discussionUrl": "https://news.ycombinator.com/item?id=49752422",
+      "rank": 10
+    },
+    {
+      "id": "hackernews-88",
+      "sourceId": "hackernews",
+      "sourceLabel": "Hacker News",
+      "sourceCategory": "community",
+      "lang": "en",
+      "url": "https://techcrunch.com/2026/09/17/microsoft-exec-called-ai-scraping-the-largest-theft-of-labor-in-human-history-new-unredacted-filings-reveal",
+      "publishedAt": "2026-09-18T09:45:07.000Z",
+      "author": "@pluc",
+      "title": "Microsoft exec called AI scraping 'the largest theft of labor in human history'",
+      "titleJa": "Microsoft 幹部、AIのスクレイピングを「人類史上最大の労働の窃盗」と発言",
+      "summaryJa": "TechCrunch が報じた新たに開示された非編集の訴訟資料で、Microsoft の幹部が AI 学習用のウェブスクレイピングを「人類史上最大の労働の窃盗」と表現していたことが判明した。HN では937ポイント・825コメントと大きな議論になっている。",
+      "whyJa": "学習データの正当性を巡る訴訟の重要証拠",
+      "tags": [
+        "ビジネス",
+        "データ"
+      ],
+      "score": 80,
+      "curatedBy": "subagent",
+      "points": 937,
+      "comments": 825,
+      "discussionUrl": "https://news.ycombinator.com/item?id=49752056",
+      "rank": 11
+    },
+    {
+      "id": "openai-10",
+      "sourceId": "openai",
+      "sourceLabel": "OpenAI News",
+      "sourceCategory": "vendor",
+      "lang": "en",
+      "url": "https://openai.com/index/model-misalignment-reporting-framework",
+      "publishedAt": "2026-09-16T17:00:00.000Z",
+      "author": "",
+      "title": "Our framework for reporting model misalignment",
+      "titleJa": "モデルのミスアラインメントを報告するためのフレームワーク",
+      "summaryJa": "OpenAIが、モデルのミスアラインメント（意図しない逸脱）を追跡・調査・開示するためのフレームワークを公開。あわせて、予期しない挙動や懸念される挙動に関する6件の報告事例も同時に公表した。",
+      "whyJa": "一次情報。安全性の開示手法の基準になりうる",
+      "tags": [
+        "安全性",
+        "研究"
+      ],
+      "score": 80,
+      "curatedBy": "subagent",
+      "rank": 12
+    },
+    {
+      "id": "aws-jp-news-34",
+      "sourceId": "aws-jp-news",
+      "sourceLabel": "AWS Japan Blog",
+      "sourceCategory": "vendor",
+      "lang": "ja",
+      "url": "https://aws.amazon.com/jp/blogs/news/software-factory-1000-prs",
+      "publishedAt": "2026-09-19T11:19:07.000Z",
+      "author": "稲田大陸",
+      "title": "Kiro Crew でソフトウェアファクトリーを構築し、1 週間で 1000 件の PR をマージした方法",
+      "titleJa": "Kiro Crew でソフトウェアファクトリーを構築し、1 週間で 1000 件の PR をマージした方法",
+      "summaryJa": "Kiro Crew をフルタイムで開発する3人のエンジニアが、7日間で1,000件のプルリクエストをマージした。1日120件超がすべてCIとレビューを通過。並行開発の限界を越えるたびに生まれた進め方を5段階として整理し、最新段階を Crew Mode と呼ぶ。",
+      "whyJa": "エージェント並行開発の到達点を一次情報と数値で示す",
+      "tags": [
+        "エージェント",
+        "開発"
+      ],
+      "score": 78,
+      "curatedBy": "subagent",
+      "rank": 13
+    },
+    {
+      "id": "hackernews-142",
+      "sourceId": "hackernews",
+      "sourceLabel": "Hacker News",
+      "sourceCategory": "community",
+      "lang": "en",
+      "url": "https://code.claude.com/docs/en/changelog",
+      "publishedAt": "2026-09-18T21:00:32.000Z",
+      "author": "@datadrivenangel",
+      "title": "Claude Code now reads AGENTS.md if there is no Claude.md",
+      "titleJa": "Claude Code、CLAUDE.md がなければ AGENTS.md を読むように",
+      "summaryJa": "Anthropic の Claude Code の変更履歴で、プロジェクトに CLAUDE.md が存在しない場合は AGENTS.md を読み込む挙動が追加された。エージェント向け指示ファイルの共通フォーマットに歩み寄る変更で、HN では731ポイント・275コメントを集めた。",
+      "whyJa": "エージェント指示ファイルの標準化が前進",
+      "tags": [
+        "エージェント",
+        "開発"
+      ],
+      "score": 78,
+      "curatedBy": "subagent",
+      "points": 731,
+      "comments": 275,
+      "discussionUrl": "https://news.ycombinator.com/item?id=49760187",
+      "rank": 14
+    },
+    {
+      "id": "hackernews-83",
+      "sourceId": "hackernews",
+      "sourceLabel": "Hacker News",
+      "sourceCategory": "community",
+      "lang": "en",
+      "url": "https://www.scmp.com/tech/big-tech/article/3368055/alibaba-open-sources-medical-ai-model-can-detect-cancer-and-nearly-150-conditions",
+      "publishedAt": "2026-09-18T23:54:42.000Z",
+      "author": "@yogthos",
+      "title": "Alibaba open-sources AI model that can detect cancer and nearly 150 conditions",
+      "titleJa": "Alibaba、がんなど約150疾患を検出する医療AIモデルをオープンソース化",
+      "summaryJa": "SCMP によると、Alibaba ががんを含むおよそ150の疾患を検出できる医療用AIモデルをオープンソースとして公開した。大手クラウド事業者が医療分野の学習済みモデルを開放する動きとして、HN で151ポイント・24コメントを集めている。",
+      "whyJa": "医療AIの重み公開が応用の裾野を広げうる",
+      "tags": [
+        "モデル",
+        "研究"
+      ],
+      "score": 76,
+      "curatedBy": "subagent",
+      "points": 151,
+      "comments": 24,
+      "discussionUrl": "https://news.ycombinator.com/item?id=49761840",
+      "rank": 15
+    },
+    {
+      "id": "aws-ml-27",
+      "sourceId": "aws-ml",
+      "sourceLabel": "AWS Machine Learning Blog",
+      "sourceCategory": "vendor",
+      "lang": "en",
+      "url": "https://aws.amazon.com/blogs/machine-learning/improving-hcls-ai-reasoning-with-open-source-agent-skills",
+      "publishedAt": "2026-09-16T19:00:00.000Z",
+      "author": "Michael Hsieh",
+      "title": "Improving HCLS AI reasoning with open-source agent skills",
+      "titleJa": "オープンソースのエージェントスキルでHCLS領域のAI推論を改善",
+      "summaryJa": "基盤モデル上のAIエージェントは医療・ライフサイエンスの判断枠組みを正しく引用しても適用を誤ると指摘し、AWSが11領域38件のオープンソースのエージェントスキルを公開。導入手順と3つの実例、410プロンプトの評価で70〜86%の勝率を示した。",
+      "whyJa": "一次情報かつ再現可能な評価数値を伴う",
+      "tags": [
+        "エージェント",
+        "研究"
+      ],
+      "score": 74,
+      "curatedBy": "subagent",
+      "rank": 16
+    },
+    {
+      "id": "aws-ml-14",
+      "sourceId": "aws-ml",
+      "sourceLabel": "AWS Machine Learning Blog",
+      "sourceCategory": "vendor",
+      "lang": "en",
+      "url": "https://aws.amazon.com/blogs/machine-learning/amazon-sagemaker-inference-2026-year-to-date-launches-in-review",
+      "publishedAt": "2026-09-18T20:52:14.000Z",
+      "author": "Kareem Syed-Mohammed",
+      "title": "Amazon SageMaker Inference: 2026 year-to-date launches in review",
+      "titleJa": "Amazon SageMaker Inference：2026年これまでのローンチ総まとめ",
+      "summaryJa": "Amazon SageMaker AIが2026年これまでに投入した推論関連13件のローンチを総括。フルマネージドのエンドポイントとSageMaker HyperPod Inferenceの2つの展開経路について、推論レコメンデーション、容量を考慮したインスタンスプール、階層型KVキャッシュ、prefillとdecodeの分離などを振り返る。",
+      "whyJa": "推論基盤の選択肢を一次情報でまとめて把握できる",
+      "tags": [
+        "クラウド",
+        "開発"
+      ],
+      "score": 72,
+      "curatedBy": "subagent",
+      "rank": 17
+    },
+    {
+      "id": "zenn-63",
+      "sourceId": "zenn",
+      "sourceLabel": "Zenn (topic: AI)",
+      "sourceCategory": "community",
+      "lang": "ja",
+      "url": "https://zenn.dev/oishiigohan/books/claude-code-mods-jissen",
+      "publishedAt": "2026-09-20T18:48:47.000Z",
+      "author": "おいしいごはん",
+      "title": "Claude Code Mods 実践ガイド ― 関数フックで本体を改造する、動く Mod 7本",
+      "titleJa": "Claude Code Mods 実践ガイド ― 関数フックで本体を改造する、動く Mod 7本",
+      "summaryJa": "2026年9月にClaude Codeへ入った関数フック機能「Mods」を、実機バージョン2.1.278で検証しながら7本のModを作る実践本。危険コマンド拒否、秘密情報マスク、モデル・effortルーターなどを、フックが発火した証拠ファイル付きで解説する。",
+      "whyJa": "新機能Modsの動く実装例が7本まとまっている",
+      "tags": [
+        "開発",
+        "エージェント"
+      ],
+      "score": 68,
+      "curatedBy": "subagent",
+      "rank": 18
+    },
+    {
+      "id": "aws-jp-news-39",
+      "sourceId": "aws-jp-news",
+      "sourceLabel": "AWS Japan Blog",
+      "sourceCategory": "vendor",
+      "lang": "ja",
+      "url": "https://aws.amazon.com/jp/blogs/news/aws-agentic-standard-operating-procedures-sops-for-erp-automation",
+      "publishedAt": "2026-09-18T02:08:13.000Z",
+      "author": "Koshi Matsumoto",
+      "title": "ERP例外処理をAWSエージェント型標準作業手順書（SOP）で自動化",
+      "titleJa": "ERP例外処理をAWSエージェント型標準作業手順書（SOP）で自動化",
+      "summaryJa": "Amazon Bedrock AgentCore と Strands を基盤に、ナレッジベース上のSOPを実行時に解釈してSAP／非SAPシステム横断でERP例外を自律解決する「エージェント型SOP」のリファレンスアーキテクチャを公開。あるグローバル製造業ではPO引当計上が30日超から数分に短縮された。",
+      "whyJa": "業務システムへのエージェント適用の実装指針",
+      "tags": [
+        "エージェント",
+        "クラウド",
+        "ビジネス"
+      ],
+      "score": 68,
+      "curatedBy": "subagent",
+      "rank": 19
+    },
+    {
+      "id": "zenn-62",
+      "sourceId": "zenn",
+      "sourceLabel": "Zenn (topic: AI)",
+      "sourceCategory": "community",
+      "lang": "ja",
+      "url": "https://zenn.dev/kazu_aiengineer/articles/azure-openai-spend-limit-tpm",
+      "publishedAt": "2026-09-20T19:10:00.000Z",
+      "author": "Kazu",
+      "title": "Azure OpenAIに支出のハードリミットは無い — pause APIなら推論は423で止まる",
+      "titleJa": "Azure OpenAIに支出のハードリミットは無い — pause APIなら推論は423で止まる",
+      "summaryJa": "Azure OpenAIにはOpenAI APIのような予算超過を防ぐハードリミット設定が無いことを公式記述で確認し、代替策を検証した記事。デプロイのpause APIを使えば推論リクエストが423で止まるため、実際に支出を遮断できると示す。",
+      "whyJa": "エージェントの請求暴走を止める具体策",
+      "tags": [
+        "クラウド",
+        "開発"
+      ],
+      "score": 66,
+      "curatedBy": "subagent",
+      "rank": 20
+    },
+    {
+      "id": "zenn-68",
+      "sourceId": "zenn",
+      "sourceLabel": "Zenn (topic: AI)",
+      "sourceCategory": "community",
+      "lang": "ja",
+      "url": "https://zenn.dev/xxkuboxx/articles/e232d267a76f43",
+      "publishedAt": "2026-09-20T16:14:29.000Z",
+      "author": "kubotaka",
+      "title": "Jev, Gemini, DistilBERT, LightGBMの分類性能を比較してみた",
+      "titleJa": "Jev, Gemini, DistilBERT, LightGBMの分類性能を比較してみた",
+      "summaryJa": "Typesafe AIのJevの分類性能を、Gemini・DistilBERT・LightGBMと比較する独自の定量実験の報告。定性的な評判ばかりが先行するJevについて、手元で実施した分類タスクの評価結果から相対的な位置づけを論じている。",
+      "whyJa": "話題のモデルを自前の数値で比較した一次情報",
+      "tags": [
+        "モデル",
+        "研究",
+        "データ"
+      ],
+      "score": 64,
+      "curatedBy": "subagent",
+      "rank": 21
+    },
+    {
+      "id": "openai-11",
+      "sourceId": "openai",
+      "sourceLabel": "OpenAI News",
+      "sourceCategory": "vendor",
+      "lang": "en",
+      "url": "https://openai.com/index/unlocking-new-ways-of-working",
+      "publishedAt": "2026-09-16T09:00:00.000Z",
+      "author": "",
+      "title": "How workers are unlocking new ways of working",
+      "titleJa": "働き手はAIで新しい働き方をどう切り拓いているか",
+      "summaryJa": "OpenAIの新しい経済研究が、働き手が従来の職務の枠を超えてAIを使っている実態と、どの新しい活動が仕事の中で繰り返し行われる定着した業務になっていくのかを分析した結果を示している。",
+      "whyJa": "一次データに基づく利用実態の把握",
+      "tags": [
+        "研究",
+        "データ"
+      ],
+      "score": 64,
+      "curatedBy": "subagent",
+      "rank": 22
+    },
+    {
+      "id": "qiita-55",
+      "sourceId": "qiita",
+      "sourceLabel": "Qiita (tag: AI)",
+      "sourceCategory": "community",
+      "lang": "ja",
+      "url": "https://qiita.com/Takuya__/items/d2a6c4b812504239a539",
+      "publishedAt": "2026-09-20T23:39:52.000Z",
+      "author": "Takuya__",
+      "title": "MCPでClaudeに「外の道具」をつなぐ実践ガイド:コネクタ追加・Claude Code・Chrome操作・computer useまで(2026年9月版)",
+      "titleJa": "MCPでClaudeに「外の道具」をつなぐ実践ガイド:コネクタ追加・Claude Code・Chrome操作・computer useまで(2026年9月版)",
+      "summaryJa": "NotionやGitHubとClaudeの間でコピペを往復する手間をMCPで解消する方法を、2026年9月時点の情報としてまとめた実践ガイド。コネクタ追加、Claude Code、Chrome操作、computer useまでを一通り扱う。",
+      "whyJa": "MCP導入の手順を日本語で横断的に整理",
+      "tags": [
+        "エージェント",
+        "開発"
+      ],
+      "score": 63,
+      "curatedBy": "subagent",
+      "rank": 23
+    },
+    {
+      "id": "zenn-73",
+      "sourceId": "zenn",
+      "sourceLabel": "Zenn (topic: AI)",
+      "sourceCategory": "community",
+      "lang": "ja",
+      "url": "https://zenn.dev/titosemi/articles/cb9152ce202280",
+      "publishedAt": "2026-09-20T15:00:30.000Z",
+      "author": "ちとせみ",
+      "title": "Jev完全入門ガイド",
+      "titleJa": "Jev完全入門ガイド",
+      "summaryJa": "AIスタートアップTypesafe AIが開発したSystem Oneモデル「Jev」の入門解説。Jevは文章を一切生成せず、渡したstate（評価対象）とquestions（知りたいこと）に対し型の決まった判断だけを返すモデルで、低コスト・高速にAIの判断を組み込む用途を紹介する。",
+      "whyJa": "新カテゴリのモデルを実装目線で理解できる",
+      "tags": [
+        "モデル",
+        "開発"
+      ],
+      "score": 62,
+      "curatedBy": "subagent",
+      "rank": 24
+    }
+  ]
+}
