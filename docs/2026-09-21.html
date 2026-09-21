@@ -103,6 +103,7 @@ a{color:inherit}
 .hero-sum{margin:0;color:var(--ink-soft);font-size:clamp(13px,3.4vw,15px)}
 .gr-arrow{display:block;width:34px;height:54px;margin:2px auto;color:var(--accent-2)}
 .gr-arrow-r{width:54px;height:34px;color:var(--accent-2);flex:none}
+.cmp-mid .gr-arrow-r{width:46px;height:30px}
 
 /* ── 付箋 ── */
 .notes{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,210px),1fr));gap:14px;margin:16px 0 8px}
@@ -146,7 +147,8 @@ a{color:inherit}
 .dive:nth-of-type(odd){transform:rotate(-.25deg)}
 .dive:nth-of-type(even){transform:rotate(.2deg)}
 
-.dive-top{display:flex;gap:13px;align-items:flex-start;margin-bottom:12px}
+.dive-top{display:flex;gap:12px;align-items:flex-start;margin-bottom:12px}
+.dive-top .ic-xl{margin-top:1px}
 .dive-no{
   flex:none;width:42px;height:42px;display:grid;place-items:center;
   font-size:19px;font-weight:700;color:var(--paper);background:var(--ac);
@@ -182,9 +184,9 @@ a{color:inherit}
   border-radius:16px 200px 14px 195px/195px 14px 205px 16px;
   padding:14px 15px;box-shadow:3px 4px 0 var(--shadow);
 }
-.concept .term{display:flex;align-items:baseline;gap:7px;flex-wrap:wrap;margin-bottom:4px}
+.concept .term{display:flex;align-items:center;gap:7px;flex-wrap:wrap;margin-bottom:4px;color:var(--ac)}
 .concept .term b{font-size:16px;color:var(--ac)}
-.concept .plain{font-size:13px;color:var(--ink-soft)}
+.concept .plain{font-size:13px;color:var(--ink-soft);flex:1 1 100%}
 .concept p{margin:6px 0 0;font-size:13.5px;line-height:1.8;color:var(--ink)}
 
 /* ── 図版（3種） ── */
@@ -213,7 +215,7 @@ a{color:inherit}
 .flow-body span{font-size:13px;color:var(--ink-soft);line-height:1.7}
 
 /* compare: 2カラム＋中央の矢印 */
-.cmp{display:flex;gap:12px;align-items:center;justify-content:center;flex-wrap:wrap}
+.cmp{display:flex;gap:12px;align-items:flex-start;justify-content:center;flex-wrap:wrap}
 .cmp-col{flex:1 1 220px;min-width:0}
 .cmp-col h5{
   margin:0 0 10px;font-size:14px;text-align:center;padding:4px 10px;
@@ -228,7 +230,7 @@ a{color:inherit}
 .cmp-col.was .cmp-item{opacity:.72;border-style:dashed}
 .cmp-item b{display:block;font-size:14px}
 .cmp-item span{font-size:12.5px;color:var(--ink-soft);line-height:1.65}
-.cmp-mid{display:grid;place-items:center;flex:0 0 auto}
+.cmp-mid{display:grid;place-items:center;flex:0 0 auto;align-self:center;color:var(--ac)}
 .cmp-mid .gr-arrow{display:none}
 @media (max-width:560px){
   .cmp{flex-direction:column;align-items:stretch}
@@ -256,7 +258,8 @@ a{color:inherit}
 .impacts{display:grid;gap:11px}
 .impact{display:flex;gap:11px;align-items:flex-start;flex-wrap:wrap}
 .impact-who{
-  flex:none;font-size:13px;padding:3px 12px;color:var(--paper);background:var(--ac);
+  flex:none;display:inline-flex;align-items:center;gap:5px;
+  font-size:13px;padding:3px 12px;color:var(--paper);background:var(--ac);
   border-radius:190px 12px 185px 13px/13px 180px 12px 195px;white-space:nowrap;
 }
 .impact-what{flex:1 1 220px;font-size:14px;line-height:1.85;min-width:0}
@@ -278,6 +281,59 @@ a{color:inherit}
 .nextstep b{color:var(--ac)}
 .dive-src{margin:16px 0 0;font-size:12.5px;color:var(--ink-faint);word-break:break-word}
 .dive-src a{color:var(--ac)}
+
+/* ── アイコン ── */
+.ic{width:1.35em;height:1.35em;flex:none;vertical-align:-.3em}
+.ic-lg{width:30px;height:30px;flex:none}
+.ic-xl{width:40px;height:40px;flex:none}
+
+/* ── 数値の視覚化 ── */
+.metrics{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,250px),1fr));gap:14px}
+.metric{
+  background:var(--card-2);border:2.6px solid var(--ink);
+  border-radius:14px 190px 16px 195px/195px 16px 200px 14px;
+  padding:13px 15px 14px;box-shadow:3px 4px 0 var(--shadow);
+}
+.metric-head{display:flex;align-items:center;gap:8px;margin-bottom:9px;color:var(--ac)}
+.metric-head b{font-size:14.5px;line-height:1.4}
+.metric-row{display:flex;align-items:center;gap:8px;margin-bottom:6px}
+.metric-tag{flex:none;width:4.6em;font-size:11.5px;color:var(--ink-faint);text-align:right;white-space:nowrap}
+.metric-bar{flex:1;height:20px;min-width:0;position:relative}
+.metric-bar i{
+  position:absolute;left:0;top:0;bottom:0;display:block;min-width:18px;
+  border-radius:4px 14px 5px 12px;border:1.8px solid var(--ink);
+}
+.metric-bar.was i{background:transparent;border-style:dashed;opacity:.65}
+.metric-bar.now i{background:color-mix(in srgb, var(--ac) 45%, transparent)}
+.metric-val{font-size:13px;white-space:nowrap;flex:none;font-weight:700}
+.metric-delta{
+  display:inline-flex;align-items:center;gap:5px;margin-top:6px;font-size:12.5px;
+  padding:2px 11px;color:var(--paper);background:var(--ac);
+  border-radius:185px 11px 180px 12px/12px 175px 11px 190px;
+}
+.metric-big{display:flex;align-items:baseline;gap:5px;flex-wrap:wrap;margin:2px 0 0}
+.metric-big strong{font-size:clamp(26px,7vw,36px);line-height:1.15;color:var(--ac);font-weight:700}
+.metric-big span{font-size:14px;color:var(--ink-soft)}
+.metric-note{margin:5px 0 0;font-size:12px;color:var(--ink-faint);line-height:1.6}
+
+/* ── たとえ話のミニ図 ── */
+.analogy-strip{
+  display:flex;align-items:center;justify-content:center;gap:10px;flex-wrap:wrap;
+  margin:12px 0 2px;padding-top:11px;border-top:2.5px dashed rgba(0,0,0,.18);
+}
+:root[data-theme="dark"] .analogy-strip{border-top-color:rgba(255,255,255,.2)}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .analogy-strip{border-top-color:rgba(255,255,255,.2)}}
+.analogy-strip figure{display:grid;justify-items:center;gap:3px;margin:0;font-size:12.5px;max-width:110px;text-align:center}
+.analogy-strip figure .ic-lg{color:var(--ac)}
+.analogy-strip .gr-arrow-r{width:52px;height:30px;color:var(--ac);opacity:1}
+
+/* ── 図版のアイコン ── */
+.flow-body b .ic,.cmp-item b .ic,.layer b .ic{margin-right:5px;color:var(--ac)}
+.cyc-loop{
+  display:flex;align-items:center;justify-content:center;gap:7px;margin-top:10px;
+  font-size:12.5px;color:var(--ac);
+}
+.cyc-loop .ic{width:1.5em;height:1.5em}
 
 /* ═══════════════ 一覧ページのカード ═══════════════ */
 .cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,300px),1fr));gap:18px}
@@ -427,28 +483,71 @@ footer a{color:var(--accent-2)}
     <article class="dive a1" id="dive-hackernews-103">
       <div class="dive-top">
         <div class="dive-no">1</div>
+        <span class="ic-xl" style="color:var(--ac)"><svg class="ic-xl" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4,8 L12,4 L20,8 L20,16 L12,20 L4,16 Z M4,8 L12,12 L20,8 M12,12 L12,20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" filter="url(#rough-soft)"/></svg></span>
         <div>
-          <h3 class="dive-head">文章ではなく答えだけ返すAI</h3>
+          <h3 class="dive-head">答えを一瞬で出す新AI登場</h3>
           <p class="dive-meta">Hacker News・9/16・原題: Introducing System One Models and Jev</p>
         </div>
       </div>
 
-      <p class="dive-hook">AIを作る会社 Typesafe.ai が、これまでとはまったく違う仕組みのAI「Jev」を公開しました。人が読むための文章は一切作らず、あらかじめ決めた形の答えと「どれくらい確かか」という数字だけを返します。返事は0.07〜0.5秒で戻り、答えを出す側の料金は無料です。</p>
+      <p class="dive-hook">TypeSafe AIという会社が、文章を一文字ずつ書くのではなく、答えをまるごと一瞬で出す新しいタイプのAI「Jev」を公開しました。答えが返ってくるまでの時間は最短0.07秒、最長でも0.5秒と、これまでのAIより最大200倍速いとされています。しかも、事実と違うことを答えてしまう問題が起きない仕組みになっているといいます。</p>
 
       <div class="two">
-        <div class="panel bg"><b>そもそもの話</b>いま話題のAIの多くは、文章を単語より細かいかたまりに分け、それを前から1つずつ予測して並べていきます。人が読む文章を作るにはこのやり方が向いていますが、順番に作るぶん時間がかかり、できあがるのはあくまで文字の並びです。プログラムがその答えを使うには書かれた文字を読み取り直す必要があり、形が崩れていたり事実でない内容が混じっていたりすると、そこで処理が止まってしまいます。</div>
-        <div class="panel an"><b>たとえるなら</b>飲食店で注文を確かめるとき、店員さんが「ええと、こちらのお客様はコーヒーをホットで、砂糖はなしで……」と最初から順に話すのが、これまでのAIです。Jevは、伝票のチェック欄に一度で印をつけて返します。欄と選べる項目が最初から決まっているので、書き間違いが起きず、こちらも読み直す必要がありません。</div>
+        <div class="panel bg"><b>そもそもの話</b>これまでのAI（ChatGPTなど）は、文章を単語ごとに一つずつ予測しながら答えを作る仕組みです。そのため長い答えほど時間がかかり、時には事実と違う内容をもっともらしく答えてしまう「ハルシネーション」という問題もありました。今回登場したのは、この仕組みを根本から変える新しいタイプのAIです。</div>
+        <div class="panel an"><b>たとえるなら</b>これまでのAIは、注文を受けてから一文字ずつ手書きで返事を書く郵便局員のようなものでした。新しいSystem Oneモデルは、あらかじめ用意された回答カードの中から、いちばん当てはまるものを一瞬で選んで渡す窓口係のようなイメージです。書く手間がかからない分、圧倒的に速く答えを渡せます。<div class="analogy-strip">
+            <figure><svg class="ic ic-lg" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M3,6 L21,6 L21,18.5 L3,18.5 Z M3,6 L12,13 L21,6" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" filter="url(#rough-soft)"/></svg><figcaption>手書きで返信</figcaption></figure>
+            
+<svg class="gr-arrow-r" viewBox="0 0 64 40" aria-hidden="true">
+  <path d="M4,20 C20,14 34,26 58,19" fill="none" stroke="currentColor" stroke-width="3"
+        stroke-linecap="round" marker-end="url(#arrowhead)" filter="url(#rough-soft)"/>
+</svg>
+            <figure><svg class="ic ic-lg" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4,12.5 L9.5,18 L20,5.5" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" filter="url(#rough-soft)"/></svg><figcaption>カード即選択</figcaption></figure>
+          </div></div>
+      </div>
+
+      <div class="dd-sub"><h4>数字で見る</h4><div class="r"></div></div>
+      <div class="metrics">
+        <div class="metric">
+          <div class="metric-head"><svg class="ic ic-lg" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12,3.5 A8.5,8.5 0 1,0 12,20.5 A8.5,8.5 0 1,0 12,3.5 M12,7.5 L12,12 L15.5,14.2" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" filter="url(#rough-soft)"/></svg><b>応答時間</b></div>
+          <div class="metric-row">
+            <span class="metric-tag">これまで</span>
+            <span class="metric-bar was"><i style="width:100%"></i></span>
+            <span class="metric-val">329秒</span>
+          </div>
+          <div class="metric-row">
+            <span class="metric-tag">これから</span>
+            <span class="metric-bar now"><i style="width:6%"></i></span>
+            <span class="metric-val">0.5秒</span>
+          </div>
+          <span class="metric-delta"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12,4 L12,19 M6,13 L12,19.5 L18,13" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" filter="url(#rough-soft)"/></svg>99.8% 減</span>
+          
+        </div>
+        <div class="metric">
+          <div class="metric-head"><svg class="ic ic-lg" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M3.5,17.5 A9,9 0 0,1 20.5,17.5 M12,17.5 L16.5,9.5 M12,17.6 L12.1,17.6 M5.6,11.5 L6.6,12.2 M12,6 L12,7.2 M18.4,11.5 L17.4,12.2" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" filter="url(#rough-soft)"/></svg><b>従来比の速さ</b></div>
+          <p class="metric-big"><strong>200</strong><span>倍</span></p>
+          <p class="metric-note">最大200倍速いと主張</p>
+        </div>
+        <div class="metric">
+          <div class="metric-head"><svg class="ic ic-lg" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12,3.5 A8.5,8.5 0 1,0 12,20.5 A8.5,8.5 0 1,0 12,3.5 M12,6.5 L12,17.5 M15,9 A3,2.2 0 0,0 9,9.4 C9,12.5 15,11.5 15,14.6 A3,2.2 0 0,1 9,15" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" filter="url(#rough-soft)"/></svg><b>入力コスト</b></div>
+          <p class="metric-big"><strong>0.042</strong><span>ドル/百万トークン</span></p>
+          <p class="metric-note">出力は無料</p>
+        </div>
+        <div class="metric">
+          <div class="metric-head"><svg class="ic ic-lg" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12,3 L20,6 L20,12 C20,16.5 16.5,19.8 12,21.2 C7.5,19.8 4,16.5 4,12 L4,6 Z M8.8,12 L11.2,14.4 L15.5,9.8" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" filter="url(#rough-soft)"/></svg><b>ハルシネーション率</b></div>
+          <p class="metric-big"><strong>0</strong><span>%</span></p>
+          <p class="metric-note">型安全性で保証と主張</p>
+        </div>
       </div>
 
       <div class="dd-sub"><h4>図で見る</h4><div class="r"></div></div>
       <div class="fig">
-        <p class="fig-title">これまでのAIとJevの違い</p>
+        <p class="fig-title">答え方が変わる仕組み</p>
         <div class="cmp">
         <div class="cmp-col was">
-          <h5>これまで</h5>
-          <div class="cmp-item"><b>順番に作る</b><span>1つずつ作るので3〜329秒かかる</span></div>
-          <div class="cmp-item"><b>文字で返す</b><span>受け取る側が中身を読み取り直す</span></div>
-          <div class="cmp-item"><b>作り話が混入</b><span>事実でない内容が混じることがある</span></div>
+          <h5>これまでのAI</h5>
+          <div class="cmp-item"><b><svg class="ic" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5,7 L5.6,7 M9,7 L19,7 M5,12 L5.6,12 M9,12 L19,12 M5,17 L5.6,17 M9,17 L19,17" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" filter="url(#rough-soft)"/></svg>1語ずつ生成</b><span>文章を順番に予測して作る</span></div>
+          <div class="cmp-item"><b><svg class="ic" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4,6 L20,6 L20,15 L12,15 L7,19 L7.5,15 L4,15 Z M8,10.5 L16,10.5" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" filter="url(#rough-soft)"/></svg>好みで訓練</b><span>人の好みに合わせて調整</span></div>
+          <div class="cmp-item"><b><svg class="ic" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12,3.5 A8.5,8.5 0 1,0 12,20.5 A8.5,8.5 0 1,0 12,3.5 M12,7.5 L12,12 L15.5,14.2" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" filter="url(#rough-soft)"/></svg>数秒〜数分</b><span>最大329秒かかることも</span></div>
         </div>
         <div class="cmp-mid">
 <svg class="gr-arrow-r" viewBox="0 0 64 40" aria-hidden="true">
@@ -460,53 +559,54 @@ footer a{color:var(--accent-2)}
         stroke-linecap="round" marker-end="url(#arrowhead)" filter="url(#rough-soft)"/>
 </svg></div>
         <div class="cmp-col now">
-          <h5>これから</h5>
-          <div class="cmp-item"><b>一度に出す</b><span>70〜500ミリ秒で返る</span></div>
-          <div class="cmp-item"><b>決まった形</b><span>形の間違い（型エラー）は0%</span></div>
-          <div class="cmp-item"><b>確信度つき</b><span>どれくらい確かかを数字で返す</span></div>
+          <h5>System Oneモデル</h5>
+          <div class="cmp-item"><b><svg class="ic" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M3.5,17.5 A9,9 0 0,1 20.5,17.5 M12,17.5 L16.5,9.5 M12,17.6 L12.1,17.6 M5.6,11.5 L6.6,12.2 M12,6 L12,7.2 M18.4,11.5 L17.4,12.2" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" filter="url(#rough-soft)"/></svg>全部同時生成</b><span>並列サンプラーで一括出力</span></div>
+          <div class="cmp-item"><b><svg class="ic" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4,12.5 L9.5,18 L20,5.5" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" filter="url(#rough-soft)"/></svg>型安全な値</b><span>決めた形式を必ず守る</span></div>
+          <div class="cmp-item"><b><svg class="ic" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4,20 L20,20 M6.5,20 L6.5,13 L9.5,13 L9.5,20 M11,20 L11,8.5 L14,8.5 L14,20 M15.5,20 L15.5,11 L18.5,11 L18.5,20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" filter="url(#rough-soft)"/></svg>自信度も提示</b><span>答えの確からしさを数値化</span></div>
+          <div class="cmp-item"><b><svg class="ic" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12,3.5 A8.5,8.5 0 1,0 12,20.5 A8.5,8.5 0 1,0 12,3.5 M12,7.5 L12,12 L15.5,14.2" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" filter="url(#rough-soft)"/></svg>0.5秒以内</b><span>最短70ms、最長500ms</span></div>
         </div>
       </div>
-        <p class="fig-cap">左がこれまでのAIの返し方、右がJevの返し方です。</p>
+        <p class="fig-cap">これまでのAIと新型AIで、答えの作り方がどう違うかを比べています。</p>
       </div>
 
       <div class="dd-sub"><h4>使われている技術</h4><div class="r"></div></div>
       <div class="concepts">
         <div class="concept">
-          <div class="term"><b>トークンを1つずつ作る生成</b><span class="plain">文章を細かいかたまりに分け、前から順に予測して並べるやり方</span></div>
-          <p>いまの対話型AIの標準的な作り方です。次のかたまりを予測するには直前までの結果が必要なので、必ず順番待ちが発生します。そのため答えが返るまでに3秒から329秒かかることがあり、プログラムの中で何度も呼び出す用途には向きませんでした。</p>
+          <div class="term"><svg class="ic ic-lg" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M9,4 C6,4 5,6 5,8 C3,9 3,12 5,13 C5,16 7,18 9,17 M15,4 C18,4 19,6 19,8 C21,9 21,12 19,13 C19,16 17,18 15,17 M12,4.5 L12,18" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" filter="url(#rough-soft)"/></svg><b>LLM（大規模言語モデル）</b><span class="plain">文章を単語ごとに予測しながら作るAI</span></div>
+          <p>ChatGPTなどでおなじみのAIです。直前までの文章から次の単語を予測することを繰り返して回答を作るため、長い答えほど時間がかかります。</p>
         </div>
         <div class="concept">
-          <div class="term"><b>並列サンプリング</b><span class="plain">答えを順番にではなく、一度にまとめて出す方法</span></div>
-          <p>Typesafe.ai は独自の仕組みを作り、1回の問い合わせで出力をまとめて生成します。順番待ちがなくなるため応答は70〜500ミリ秒（0.07〜0.5秒）に収まり、同じ賢さを持つ大きなAIより40〜200倍速いとしています。</p>
+          <div class="term"><svg class="ic ic-lg" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4,12.5 L9.5,18 L20,5.5" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" filter="url(#rough-soft)"/></svg><b>型安全な出力</b><span class="plain">決めた形式を必ず守って答えを返す仕組み</span></div>
+          <p>数値や選択肢など、答えの形式をあらかじめ決めておくことで、想定外の形のミスが起きないようにする考え方です。プログラムが安心して結果を使えます。</p>
         </div>
         <div class="concept">
-          <div class="term"><b>型安全な構造化出力</b><span class="plain">答えの形をあらかじめ決め、その形どおりの値だけを返す仕組み</span></div>
-          <p>Jevは文章ではなく、決められた項目と選べる値に沿った答えを返します。形が決めた通りにならないことが計算のうえで起こらないため、型エラー率は0%です。受け取るプログラムは文字を読み取り直す作業も、形が崩れた場合の備えも要らなくなります。</p>
+          <div class="term"><svg class="ic ic-lg" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12,3.5 L21.5,20 L2.5,20 Z M12,9.5 L12,14.5 M12,17 L12,17.6" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" filter="url(#rough-soft)"/></svg><b>ハルシネーション</b><span class="plain">AIが事実でないことを自信満々に答える現象</span></div>
+          <p>AIが学習していない内容を、もっともらしい嘘として答えてしまう問題です。従来のAIサービスの信頼性を下げる大きな原因になっていました。</p>
         </div>
         <div class="concept">
-          <div class="term"><b>確率つきの答え（較正）</b><span class="plain">答えと一緒に「どれくらい確かか」を数字で返すこと</span></div>
-          <p>Jevは一つの答えを言い切らず、選べる値ごとに確からしさを付けて返します。しかも自信の高さと実際の正しさが合うように訓練されており、Typesafe.ai はこの訓練方法をRLCDと呼んでいます。自信が高いものは自動で処理し、低いものは人が見る、という使い分けができます。</p>
+          <div class="term"><svg class="ic ic-lg" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12,8.6 A3.4,3.4 0 1,0 12,15.4 A3.4,3.4 0 1,0 12,8.6 M12,2.5 L12,5.5 M12,18.5 L12,21.5 M2.5,12 L5.5,12 M18.5,12 L21.5,12 M5.3,5.3 L7.4,7.4 M16.6,16.6 L18.7,18.7 M18.7,5.3 L16.6,7.4 M7.4,16.6 L5.3,18.7" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" filter="url(#rough-soft)"/></svg><b>確率のキャリブレーション（RLCD）</b><span class="plain">答えの自信度を正しい確率で示すよう訓練する方法</span></div>
+          <p>人の好みに合わせて訓練する従来の方法（RLHF）とは違い、正解かどうかを検証できる基準をもとに、答えの自信度が実際の正しさと一致するように訓練する手法です。</p>
         </div>
       </div>
 
       <div class="dd-sub"><h4>何が変わる？</h4><div class="r"></div></div>
       <div class="impacts">
-        <div class="impact"><span class="impact-who">アプリ開発者</span><span class="impact-what">AIの答えを読み取り直す処理や、形が崩れたときの後始末が不要になります。入力は100万かたまりで0.042ドル、出力は無料です。</span></div>
-        <div class="impact"><span class="impact-who">一般利用者</span><span class="impact-what">70〜500ミリ秒で返るため、入力中の候補表示や自動の振り分けなど、待ち時間が許されない画面の中でもAIの判断を使えるようになります。</span></div>
-        <div class="impact"><span class="impact-who">情報システム部門</span><span class="impact-what">事実でない内容が混じらず、答えごとに確からしさの数字が付くので、自信の低い判断だけを人が確認する運用を組めます。</span></div>
+        <div class="impact"><span class="impact-who"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M9,7.5 L4.5,12 L9,16.5 M15,7.5 L19.5,12 L15,16.5 M13.5,5.5 L10.5,18.5" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" filter="url(#rough-soft)"/></svg>アプリ開発者</span><span class="impact-what">分類やルーティングなどの条件分岐処理を、型エラーやハルシネーションを気にせず高速・低コストに組み込めるようになります。</span></div>
+        <div class="impact"><span class="impact-who"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4,4.5 L20,4.5 L20,10 L4,10 Z M4,14 L20,14 L20,19.5 L4,19.5 Z M7,7.2 L7.6,7.2 M7,16.7 L7.6,16.7 M11,7.2 L16.5,7.2 M11,16.7 L16.5,16.7" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" filter="url(#rough-soft)"/></svg>情報システム部門</span><span class="impact-what">大量データの一括処理や、AIの回答をチェックする監視・ガードレール機能を、より低コストかつ高速に自動化できます。</span></div>
+        <div class="impact"><span class="impact-who"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12,4 A3.6,3.6 0 1,0 12,11.2 A3.6,3.6 0 1,0 12,4 M4.5,20.5 C4.5,16.2 7.9,13.5 12,13.5 C16.1,13.5 19.5,16.2 19.5,20.5" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" filter="url(#rough-soft)"/></svg>一般利用者</span><span class="impact-what">リアルタイム性が求められるアプリの応答が速くなり、AIが誤った内容を答えてしまう被害を受けにくくなると期待されます。</span></div>
       </div>
 
       <div class="dd-sub"><h4>用語メモ</h4><div class="r"></div></div>
       <div class="jargon">
-        <div><b>System One モデル</b>速く、形の決まった判断を返すことに絞った新しい種類のAI</div>
-        <div><b>Jev</b>Typesafe.ai が公開した最初のSystem One モデル</div>
-        <div><b>トークン</b>AIが文章を扱うときの、単語より細かい文字のかたまり</div>
-        <div><b>ハルシネーション</b>AIが事実でない内容をもっともらしく作ってしまうこと</div>
-        <div><b>型エラー</b>返ってきた値の形が、決めておいた形と合わないこと</div>
-        <div><b>RLCD</b>自信の高さと正しさが一致するようJevを訓練した方法</div>
+        <div><b>LLM</b>文章を単語ごとに予測して生成するAI</div>
+        <div><b>トークン</b>AIが文章を読み書きする際の文字のかたまりの単位</div>
+        <div><b>ハルシネーション</b>AIが事実でない内容をもっともらしく答える現象</div>
+        <div><b>型安全</b>決まった形式を必ず守り、エラーにならない仕組み</div>
+        <div><b>関数呼び出し</b>AIが決まった処理を呼び出して実行する仕組み</div>
+        <div><b>API</b>他のソフトからAIの機能を呼び出すための窓口</div>
       </div>
 
-      <p class="nextstep"><b>次の一歩 →</b> Typesafe.ai のブログから Jev の早期アクセスに申し込み、仕分けや採点で試す</p>
+      <p class="nextstep"><b>次の一歩 →</b> Jevの公開デモ（DoomやWikiracing）を見て、実際の応答速度を確認してみましょう。</p>
 
       <p class="dive-src">出典: <a href="https://typesafe.ai/blog/introducing-system-one-models-and-jev" target="_blank" rel="noopener noreferrer">Introducing System One Models and Jev</a>（Hacker News）</p>
     </article>
@@ -514,82 +614,128 @@ footer a{color:var(--accent-2)}
     <article class="dive a2" id="dive-aws-ml-15">
       <div class="dive-top">
         <div class="dive-no">2</div>
+        <span class="ic-xl" style="color:var(--ac)"><svg class="ic-xl" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4,8 L12,4 L20,8 L20,16 L12,20 L4,16 Z M4,8 L12,12 L20,8 M12,12 L12,20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" filter="url(#rough-soft)"/></svg></span>
         <div>
-          <h3 class="dive-head">アマゾンの新AI、資料を丸ごと読める</h3>
+          <h3 class="dive-head">新モデルKimiK3がAWSで使える</h3>
           <p class="dive-meta">AWS Machine Learning Blog・9/19・原題: Introducing Kimi K3 on Amazon Bedrock</p>
         </div>
       </div>
 
-      <p class="dive-hook">中国のMoonshot AIが作った新しいAI「Kimi K3」が、アマゾンのクラウド上で呼び出して使えるようになりました。文章だけでなく画像もそのまま見て理解でき、とても長い資料や大量のプログラムを一度に読み込めるのが特徴です。同じ前置きを何度も送るときの待ち時間と料金を減らす仕組みも備えています。</p>
+      <p class="dive-hook">AI開発会社Moonshot AIが作った新しい人工知能『Kimi K3』が、Amazonが提供するAIサービスの上で使えるようになりました。とても長い文章をまとめて読めて、写真の内容も理解できます。同じ質問を繰り返すときは、前より速く安く答えを返せる工夫も入っています。</p>
 
       <div class="two">
-        <div class="panel bg"><b>そもそもの話</b>AI（人の言葉を理解して文章やプログラムを書くソフト）を使うとき、多くの人は作った会社のサービスに接続して利用します。一方で、AIの中身にあたる設定値が公開されているものは、利用する側が自分たちの環境に置いて動かせます。Amazon Bedrockは、いろいろな会社のAIをまとめて呼び出せる窓口のようなAWSのサービスで、今回そこに新しいAIが加わりました。</div>
-        <div class="panel an"><b>たとえるなら</b>料理のたびにだしを一から取り直すのではなく、一度取っただしを冷蔵庫に30分以上とっておいて、二品目からは使い回すようなものです。だしを取る手間（待ち時間）と材料費（料金）が二品目からぐっと下がります。とっておく分の費用は少しかかりますが、同じだしを何度も使うほど得になります。</div>
-      </div>
-
-      <div class="dd-sub"><h4>図で見る</h4><div class="r"></div></div>
-      <div class="fig">
-        <p class="fig-title">前置きの使い回し方</p>
-        <div class="cmp">
-        <div class="cmp-col was">
-          <h5>これまで</h5>
-          <div class="cmp-item"><b>毎回送信</b><span>同じ前置きを呼び出すたびに送る</span></div>
-          <div class="cmp-item"><b>都度課金</b><span>同じ入力に毎回そのまま料金</span></div>
-          <div class="cmp-item"><b>枠を消費</b><span>毎分の入力量の上限を使い切る</span></div>
-        </div>
-        <div class="cmp-mid">
+        <div class="panel bg"><b>AIモデルとクラウド</b>AI(人工知能)は『モデル』と呼ばれる頭脳部分に文章や画像を学習させて作ります。企業が自社のサービスにAIを組み込みたいとき、Amazon Bedrockというクラウド(インターネット経由で借りる計算サービス)を使うと、複数の会社のモデルを共通の窓口からまとめて呼び出せます。今回そこに新しいモデルが加わりました。</div>
+        <div class="panel an"><b>たとえるなら図書館</b>Kimi K3は、分厚い専門書を100冊近く一度に読み込める図書館スタッフのようなものです。しかも一度読んだ内容は覚えているので、同じ質問を繰り返すと最初から読み直さず、素早く安く答えてくれます。忘れっぽい店員に何度も同じ説明をする手間がありません。<div class="analogy-strip">
+            <figure><svg class="ic ic-lg" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4,5 C7,3.6 10,3.6 12,5 C14,3.6 17,3.6 20,5 L20,19 C17,17.6 14,17.6 12,19 C10,17.6 7,17.6 4,19 Z M12,5 L12,19" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" filter="url(#rough-soft)"/></svg><figcaption>毎回読み直す</figcaption></figure>
+            
 <svg class="gr-arrow-r" viewBox="0 0 64 40" aria-hidden="true">
   <path d="M4,20 C20,14 34,26 58,19" fill="none" stroke="currentColor" stroke-width="3"
         stroke-linecap="round" marker-end="url(#arrowhead)" filter="url(#rough-soft)"/>
 </svg>
-<svg class="gr-arrow" viewBox="0 0 40 64" aria-hidden="true">
-  <path d="M20,4 C14,20 26,34 19,58" fill="none" stroke="currentColor" stroke-width="3"
-        stroke-linecap="round" marker-end="url(#arrowhead)" filter="url(#rough-soft)"/>
-</svg></div>
-        <div class="cmp-col now">
-          <h5>これから</h5>
-          <div class="cmp-item"><b>印を付ける</b><span>1,024トークン以上に区切りの印</span></div>
-          <div class="cmp-item"><b>30分保存</b><span>最低30分は保存され使い回せる</span></div>
-          <div class="cmp-item"><b>枠の外</b><span>保存分は毎分の上限に数えない</span></div>
+            <figure><svg class="ic ic-lg" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M3.5,17.5 A9,9 0 0,1 20.5,17.5 M12,17.5 L16.5,9.5 M12,17.6 L12.1,17.6 M5.6,11.5 L6.6,12.2 M12,6 L12,7.2 M18.4,11.5 L17.4,12.2" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" filter="url(#rough-soft)"/></svg><figcaption>覚えて即答</figcaption></figure>
+          </div></div>
+      </div>
+
+      <div class="dd-sub"><h4>数字で見る</h4><div class="r"></div></div>
+      <div class="metrics">
+        <div class="metric">
+          <div class="metric-head"><svg class="ic ic-lg" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M7,7 L17,7 L17,17 L7,17 Z M10,10.5 L14,10.5 L14,13.5 L10,13.5 Z M10,3.5 L10,7 M14,3.5 L14,7 M10,17 L10,20.5 M14,17 L14,20.5 M3.5,10 L7,10 M3.5,14 L7,14 M17,10 L20.5,10 M17,14 L20.5,14" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" filter="url(#rough-soft)"/></svg><b>パラメータ数</b></div>
+          <p class="metric-big"><strong>2.8兆</strong><span>個</span></p>
+          <p class="metric-note">オープンウェイトで世界最大級</p>
+        </div>
+        <div class="metric">
+          <div class="metric-head"><svg class="ic ic-lg" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12,20 L12,5 M6,11 L12,4.5 L18,11" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" filter="url(#rough-soft)"/></svg><b>拡張効率改善</b></div>
+          <p class="metric-big"><strong>2.5</strong><span>倍</span></p>
+          <p class="metric-note">前モデルKimi K2比</p>
+        </div>
+        <div class="metric">
+          <div class="metric-head"><svg class="ic ic-lg" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M6,3 L14,3 L18,7 L18,21 L6,21 Z M14,3 L14,7 L18,7 M9,12 L15,12 M9,16 L15,16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" filter="url(#rough-soft)"/></svg><b>読める文章量</b></div>
+          <p class="metric-big"><strong>100万</strong><span>トークン</span></p>
+          <p class="metric-note">一度に処理できる量</p>
+        </div>
+        <div class="metric">
+          <div class="metric-head"><svg class="ic ic-lg" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12,3.5 A8.5,8.5 0 1,0 12,20.5 A8.5,8.5 0 1,0 12,3.5 M12,6.5 L12,17.5 M15,9 A3,2.2 0 0,0 9,9.4 C9,12.5 15,11.5 15,14.6 A3,2.2 0 0,1 9,15" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" filter="url(#rough-soft)"/></svg><b>グローバル利用料金</b></div>
+          <div class="metric-row">
+            <span class="metric-tag">これまで</span>
+            <span class="metric-bar was"><i style="width:100%"></i></span>
+            <span class="metric-val">100%</span>
+          </div>
+          <div class="metric-row">
+            <span class="metric-tag">これから</span>
+            <span class="metric-bar now"><i style="width:90%"></i></span>
+            <span class="metric-val">90%</span>
+          </div>
+          <span class="metric-delta"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12,4 L12,19 M6,13 L12,19.5 L18,13" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" filter="url(#rough-soft)"/></svg>10% 減</span>
+          
         </div>
       </div>
-        <p class="fig-cap">左が今までのやり方、右が印を付けて前置きをためておく新しいやり方です。</p>
+
+      <div class="dd-sub"><h4>図で見る</h4><div class="r"></div></div>
+      <div class="fig">
+        <p class="fig-title">回答を速くする仕組み</p>
+        <div class="flow">
+        <div class="flow-step">
+          <div class="flow-no">1</div>
+          <div class="flow-body"><b><svg class="ic" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4,6 L20,6 L20,15 L12,15 L7,19 L7.5,15 L4,15 Z M8,10.5 L16,10.5" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" filter="url(#rough-soft)"/></svg>質問を送る</b><span>ユーザーがAIに質問する</span></div>
+        </div>
+        <div class="flow-step">
+          <div class="flow-no">2</div>
+          <div class="flow-body"><b><svg class="ic" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M9,4 C6,4 5,6 5,8 C3,9 3,12 5,13 C5,16 7,18 9,17 M15,4 C18,4 19,6 19,8 C21,9 21,12 19,13 C19,16 17,18 15,17 M12,4.5 L12,18" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" filter="url(#rough-soft)"/></svg>AIが処理</b><span>Kimi K3が内容を理解する</span></div>
+        </div>
+        <div class="flow-step">
+          <div class="flow-no">3</div>
+          <div class="flow-body"><b><svg class="ic" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5,6 C5,4.3 8.1,3 12,3 C15.9,3 19,4.3 19,6 C19,7.7 15.9,9 12,9 C8.1,9 5,7.7 5,6 Z M5,6 L5,18 C5,19.7 8.1,21 12,21 C15.9,21 19,19.7 19,18 L19,6 M5,12 C5,13.7 8.1,15 12,15 C15.9,15 19,13.7 19,12" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" filter="url(#rough-soft)"/></svg>内容を保存</b><span>同じ部分を30分間覚える</span></div>
+        </div>
+        <div class="flow-step">
+          <div class="flow-no">4</div>
+          <div class="flow-body"><b><svg class="ic" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M20,7.5 A8.5,8.5 0 1,0 20.6,14.6 M20,3.5 L20,8 L15.5,8" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" filter="url(#rough-soft)"/></svg>次回は参照</b><span>保存した内容を再利用する</span></div>
+        </div>
+        <div class="flow-step">
+          <div class="flow-no">5</div>
+          <div class="flow-body"><b><svg class="ic" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M3.5,17.5 A9,9 0 0,1 20.5,17.5 M12,17.5 L16.5,9.5 M12,17.6 L12.1,17.6 M5.6,11.5 L6.6,12.2 M12,6 L12,7.2 M18.4,11.5 L17.4,12.2" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" filter="url(#rough-soft)"/></svg>速く安く回答</b><span>遅延と入力コストを削減</span></div>
+        </div>
+      </div>
+        <p class="fig-cap">質問のうち繰り返し使われる部分を覚えておくことで、次回からの回答が速く安くなる流れです。</p>
       </div>
 
       <div class="dd-sub"><h4>使われている技術</h4><div class="r"></div></div>
       <div class="concepts">
         <div class="concept">
-          <div class="term"><b>オープンウェイトモデル</b><span class="plain">AIの中身の数値が公開され、誰でも動かせるモデル</span></div>
-          <p>AIは学習でためこんだ膨大な数値（重み）のかたまりです。これが公開されていると、利用する側は自分たちの管理下でAIを動かせます。Kimi K3は重みが公開されたモデルとして初めて2.8兆個という規模に達し、前の世代のKimi K2と比べて規模あたりの効率が約2.5倍に上がっています。</p>
+          <div class="term"><svg class="ic ic-lg" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4,8 L12,4 L20,8 L20,16 L12,20 L4,16 Z M4,8 L12,12 L20,8 M12,12 L12,20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" filter="url(#rough-soft)"/></svg><b>モデル</b><span class="plain">AIの頭脳にあたる部分</span></div>
+          <p>文章や画像などのデータを学習して、質問に答えたり文章を作ったりできるプログラムです。Kimi K3はこのモデルの新しい種類で、Moonshot AIという会社が開発しました。</p>
         </div>
         <div class="concept">
-          <div class="term"><b>コンテキストウィンドウ</b><span class="plain">AIが一度に読み込める文章の量の上限</span></div>
-          <p>AIには一度に読める量の上限があり、超えた分は扱えません。Kimi K3はここが100万トークン（文章を細かく区切って数えるときの単位）分あります。そのため大きなプログラム一式や長い資料、画像を、分割せずまとめて渡したまま作業を続けられます。</p>
+          <div class="term"><svg class="ic ic-lg" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4,7.5 L12,3.5 L20,7.5 L20,16.5 L12,20.5 L4,16.5 Z M4,7.5 L12,11.5 L20,7.5 M12,11.5 L12,20.5" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" filter="url(#rough-soft)"/></svg><b>オープンウェイト</b><span class="plain">モデルの中身が公開されていること</span></div>
+          <p>AIモデルの設計情報(重み)が公開されており、企業や開発者が自分のサーバーで動かしたり、AWSのような別のクラウドに載せたりできます。Kimi K3は世界最大級の2.8兆個のパラメータ(調整値)を持つオープンウェイトモデルです。</p>
         </div>
         <div class="concept">
-          <div class="term"><b>明示的プロンプトキャッシュ</b><span class="plain">毎回送る前置き部分を保存して使い回す仕組み</span></div>
-          <p>AIには毎回同じ資料や指示を前置きとして送ることが多く、そのたびに読み直す時間と料金がかかります。使い回したい部分の区切りに印を付けると、1,024トークン以上を最低30分ためておき、次からは割引価格で使えます。Amazon Bedrockのオープンウェイトモデルでこれに対応したのはKimi K3が初めてです。</p>
+          <div class="term"><svg class="ic ic-lg" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M6,3 L14,3 L18,7 L18,21 L6,21 Z M14,3 L14,7 L18,7 M9,12 L15,12 M9,16 L15,16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" filter="url(#rough-soft)"/></svg><b>コンテキストウィンドウ</b><span class="plain">AIが一度に読める文章の量</span></div>
+          <p>AIが質問に答える時に、同時に把握できる文章の長さの上限です。Kimi K3は100万トークン(文字や単語の単位)分を一度に読めるため、長い資料やコードもまとめて扱えます。</p>
+        </div>
+        <div class="concept">
+          <div class="term"><svg class="ic ic-lg" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5,6 C5,4.3 8.1,3 12,3 C15.9,3 19,4.3 19,6 C19,7.7 15.9,9 12,9 C8.1,9 5,7.7 5,6 Z M5,6 L5,18 C5,19.7 8.1,21 12,21 C15.9,21 19,19.7 19,18 L19,6 M5,12 C5,13.7 8.1,15 12,15 C15.9,15 19,13.7 19,12" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" filter="url(#rough-soft)"/></svg><b>プロンプトキャッシュ</b><span class="plain">同じ質問の一部を覚えておく仕組み</span></div>
+          <p>1,024トークン以上の同じ文章が繰り返し送られると、AIはその部分を30分間覚えておき、次回は読み直さずに済みます。これにより応答が速くなり、料金も安くなります。</p>
         </div>
       </div>
 
       <div class="dd-sub"><h4>何が変わる？</h4><div class="r"></div></div>
       <div class="impacts">
-        <div class="impact"><span class="impact-who">アプリ開発者</span><span class="impact-what">大きなプログラム一式や長い資料をまとめて渡せるうえ、同じ前置きは割引価格で使い回せるので、開発を助けるAIを安く作り込めます。</span></div>
-        <div class="impact"><span class="impact-who">情報システム部門</span><span class="impact-what">処理はAWSのデータ境界の中で行われ、データの保存も運用者の閲覧もされないため、今のセキュリティ方針を変えずに新しいAIを試せます。</span></div>
-        <div class="impact"><span class="impact-who">運用担当者</span><span class="impact-what">米国向けではなく全世界向けの接続先を選ぶと料金が約10%安くなるため、同じ処理でも接続先の選び方で費用を抑えられます。</span></div>
+        <div class="impact"><span class="impact-who"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M9,7.5 L4.5,12 L9,16.5 M15,7.5 L19.5,12 L15,16.5 M13.5,5.5 L10.5,18.5" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" filter="url(#rough-soft)"/></svg>アプリ開発者</span><span class="impact-what">Amazon Bedrockの共通窓口からKimi K3を呼び出せるので、自社アプリに長文処理や画像理解の機能を追加しやすくなります。</span></div>
+        <div class="impact"><span class="impact-who"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4,4.5 L20,4.5 L20,10 L4,10 Z M4,14 L20,14 L20,19.5 L4,19.5 Z M7,7.2 L7.6,7.2 M7,16.7 L7.6,16.7 M11,7.2 L16.5,7.2 M11,16.7 L16.5,16.7" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" filter="url(#rough-soft)"/></svg>情報システム部門</span><span class="impact-what">使うリージョンをグローバル設定にすると、地域限定設定より約10%安く運用でき、コスト管理の選択肢が増えます。</span></div>
+        <div class="impact"><span class="impact-who"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M7.5,18.5 A4.2,4.2 0 0,1 7.6,10.1 A5.3,5.3 0 0,1 17.6,10.6 A3.9,3.9 0 0,1 17.2,18.5 Z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" filter="url(#rough-soft)"/></svg>クラウド利用企業</span><span class="impact-what">OpenAI互換API・独自APIなど複数の呼び出し方法から選べるため、既存システムに組み込みやすくなります。</span></div>
       </div>
 
       <div class="dd-sub"><h4>用語メモ</h4><div class="r"></div></div>
       <div class="jargon">
-        <div><b>オープンウェイト</b>AIの中身の数値が公開され、自前の環境でも動かせること</div>
-        <div><b>トークン</b>AIが文章を数えるときの単位。文字や単語のかたまり</div>
-        <div><b>コンテキストウィンドウ</b>AIが一度に読み込める文章量の上限。Kimi K3は100万トークン</div>
-        <div><b>プロンプトキャッシュ</b>毎回送る前置きを保存して使い回し、時間と料金を減らす仕組み</div>
-        <div><b>Amazon Bedrock</b>いろいろな会社のAIをまとめて呼び出せるAWSのサービス</div>
-        <div><b>パラメータ</b>AIの中身を支える数値。Kimi K3は2.8兆個</div>
+        <div><b>Amazon Bedrock</b>AWSが提供する、複数のAIモデルをまとめて呼び出せるクラウドサービス</div>
+        <div><b>モデル</b>文章や画像を学習した、AIの頭脳にあたる部分</div>
+        <div><b>オープンウェイト</b>AIの中身の設計情報が公開されていること</div>
+        <div><b>コンテキストウィンドウ</b>AIが一度に読める文章量の上限</div>
+        <div><b>トークン</b>AIが文章を数える際の単位(文字や単語の断片)</div>
+        <div><b>プロンプトキャッシュ</b>繰り返し出てくる内容を一定時間覚えておく仕組み</div>
       </div>
 
-      <p class="nextstep"><b>次の一歩 →</b> Amazon BedrockのモデルからKimi K3を有効にし、まず短い質問で試すのがおすすめです。</p>
+      <p class="nextstep"><b>次の一歩 →</b> AWSのAmazon Bedrockコンソールで『Kimi K3』を検索して試してみましょう。</p>
 
       <p class="dive-src">出典: <a href="https://aws.amazon.com/blogs/machine-learning/introducing-kimi-k3-on-amazon-bedrock" target="_blank" rel="noopener noreferrer">Introducing Kimi K3 on Amazon Bedrock</a>（AWS Machine Learning Blog）</p>
     </article>
@@ -597,82 +743,107 @@ footer a{color:var(--accent-2)}
     <article class="dive a3" id="dive-aws-jp-news-43">
       <div class="dive-top">
         <div class="dive-no">3</div>
+        <span class="ic-xl" style="color:var(--ac)"><svg class="ic-xl" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M7,9 L17,9 L17,17 L7,17 Z M12,5 L12,9 M9.5,12.5 L9.5,13 M14.5,12.5 L14.5,13 M4,12 L7,12 M17,12 L20,12 M12,3.5 A1.4,1.4 0 1,0 12,3.6" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" filter="url(#rough-soft)"/></svg></span>
         <div>
-          <h3 class="dive-head">長い作業を最後までやり切るAIが登場</h3>
+          <h3 class="dive-head">AI開発ツールが記憶力アップ</h3>
           <p class="dive-meta">AWS Japan Blog・9/18・原題: Claude Fable 5.1 が Kiro で利用可能になりました</p>
         </div>
       </div>
 
-      <p class="dive-hook">AWS の開発ツール Kiro で、新しい AI「Claude Fable 5.1」が2026年9月18日から使えるようになりました。長い時間をかける作業でも最初に決めた計画を終盤まで保ち、不具合の見かけの症状ではなく、コードの中にある原因そのものを突き止めます。使えるのは、企業向けの管理設定を有効にしている顧客です。</p>
+      <p class="dive-hook">AI企業アンソロピック社の新しいAIモデル「Claude Fable 5.1」が、プログラム作成を助ける開発ツール「Kiro」の企業向けに使えるようになりました。長く複雑な作業でも、最初の目的を忘れずに最後まで正確にこなせる点が大きな特徴です。</p>
 
       <div class="two">
-        <div class="panel bg"><b>AIに開発を任せる話</b>Kiro は AWS が提供する、プログラムを書く仕事を AI に任せるための道具です。人が一行ずつ書く代わりに、やりたいことを伝えると AI が手順を考えて作業します。ただし作業が長くなるほど、AI は最初に決めた方針を忘れたり、話が脱線したりしがちでした。今回入った Claude Fable 5.1 は、その「長い作業を最後までやり切る」ところを狙った AI です。</div>
-        <div class="panel an"><b>引っ越しにたとえると</b>大きな引っ越しを手伝ってもらう場面に似ています。これまでの手伝い役は、午前中は指示どおりでも、夕方には「本は書斎、服は寝室」という朝の約束を忘れ、箱を適当な部屋に置き始めました。新しい手伝い役は、夕方になっても朝の約束を覚えています。しかも「この置き方では入らない」と分かったら、押し込み続けずに別のやり方に切り替えます。</div>
-      </div>
-
-      <div class="dd-sub"><h4>図で見る</h4><div class="r"></div></div>
-      <div class="fig">
-        <p class="fig-title">長い作業での振る舞いの違い</p>
-        <div class="cmp">
-        <div class="cmp-col was">
-          <h5>これまで</h5>
-          <div class="cmp-item"><b>方針を忘れる</b><span>終盤で最初の計画を見失う</span></div>
-          <div class="cmp-item"><b>症状を直す</b><span>見えている不具合だけをふさぐ</span></div>
-          <div class="cmp-item"><b>同じ失敗</b><span>行き詰まった方向を繰り返し試す</span></div>
-        </div>
-        <div class="cmp-mid">
+        <div class="panel bg"><b>AIがコードを書く時代</b>最近は、人が一つずつ細かく指示しなくても、目的だけ伝えればAI自身が手順を考えて作業を進める「エージェント」という使い方が広がっています。Kiroはそのエージェントを使ってプログラムを書いたり直したりする開発ツールで、今回その頭脳にあたるAIモデルが新しくなりました。作業が長くなるほど、AIが最初の指示を忘れずに続けられるかが実用上の課題でした。</div>
+        <div class="panel an"><b>たとえるなら</b>長い引っ越し作業を頼んだ業者が、最初にお願いした『割れ物は丁寧に』という指示を、最後の荷物を運び終えるまで忘れずに守ってくれるようなものです。今回のモデルは、作業が長引いても終盤で指示を見失うことが少なくなりました。<div class="analogy-strip">
+            <figure><svg class="ic ic-lg" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12,3.5 L21.5,20 L2.5,20 Z M12,9.5 L12,14.5 M12,17 L12,17.6" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" filter="url(#rough-soft)"/></svg><figcaption>途中で忘れる</figcaption></figure>
+            
 <svg class="gr-arrow-r" viewBox="0 0 64 40" aria-hidden="true">
   <path d="M4,20 C20,14 34,26 58,19" fill="none" stroke="currentColor" stroke-width="3"
         stroke-linecap="round" marker-end="url(#arrowhead)" filter="url(#rough-soft)"/>
 </svg>
-<svg class="gr-arrow" viewBox="0 0 40 64" aria-hidden="true">
-  <path d="M20,4 C14,20 26,34 19,58" fill="none" stroke="currentColor" stroke-width="3"
-        stroke-linecap="round" marker-end="url(#arrowhead)" filter="url(#rough-soft)"/>
-</svg></div>
-        <div class="cmp-col now">
-          <h5>これから</h5>
-          <div class="cmp-item"><b>方針を保つ</b><span>作業全体で計画と意図を保持する</span></div>
-          <div class="cmp-item"><b>原因を追う</b><span>コードの根本原因まで突き止める</span></div>
-          <div class="cmp-item"><b>手を変える</b><span>失敗と判断したら別の方向へ進む</span></div>
+            <figure><svg class="ic ic-lg" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4,12.5 L9.5,18 L20,5.5" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" filter="url(#rough-soft)"/></svg><figcaption>最後まで正確</figcaption></figure>
+          </div></div>
+      </div>
+
+      <div class="dd-sub"><h4>数字で見る</h4><div class="r"></div></div>
+      <div class="metrics">
+        <div class="metric">
+          <div class="metric-head"><svg class="ic ic-lg" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5,6 C5,4.3 8.1,3 12,3 C15.9,3 19,4.3 19,6 C19,7.7 15.9,9 12,9 C8.1,9 5,7.7 5,6 Z M5,6 L5,18 C5,19.7 8.1,21 12,21 C15.9,21 19,19.7 19,18 L19,6 M5,12 C5,13.7 8.1,15 12,15 C15.9,15 19,13.7 19,12" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" filter="url(#rough-soft)"/></svg><b>記憶できる量</b></div>
+          <p class="metric-big"><strong>100万</strong><span>トークン</span></p>
+          <p class="metric-note">一度に覚えられる情報の量</p>
+        </div>
+        <div class="metric">
+          <div class="metric-head"><svg class="ic ic-lg" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12,3.5 A8.5,8.5 0 1,0 12,20.5 A8.5,8.5 0 1,0 12,3.5 M12,6.5 L12,17.5 M15,9 A3,2.2 0 0,0 9,9.4 C9,12.5 15,11.5 15,14.6 A3,2.2 0 0,1 9,15" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" filter="url(#rough-soft)"/></svg><b>利用クレジット倍率</b></div>
+          <p class="metric-big"><strong>6</strong><span>倍</span></p>
+          <p class="metric-note">従来より多く消費する設定</p>
         </div>
       </div>
-        <p class="fig-cap">「これまで」と「これから」を見比べると、作業が長引いたときの違いが分かります。</p>
+
+      <div class="dd-sub"><h4>図で見る</h4><div class="r"></div></div>
+      <div class="fig">
+        <p class="fig-title">長時間作業の流れ</p>
+        <div class="flow">
+        <div class="flow-step">
+          <div class="flow-no">1</div>
+          <div class="flow-body"><b><svg class="ic" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M3,6 L21,6 L21,18.5 L3,18.5 Z M3,6 L12,13 L21,6" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" filter="url(#rough-soft)"/></svg>指示を受取</b><span>開発者が作業内容を伝える</span></div>
+        </div>
+        <div class="flow-step">
+          <div class="flow-no">2</div>
+          <div class="flow-body"><b><svg class="ic" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5,7 L5.6,7 M9,7 L19,7 M5,12 L5.6,12 M9,12 L19,12 M5,17 L5.6,17 M9,17 L19,17" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" filter="url(#rough-soft)"/></svg>計画を立てる</b><span>AIが手順を自分で考える</span></div>
+        </div>
+        <div class="flow-step">
+          <div class="flow-no">3</div>
+          <div class="flow-body"><b><svg class="ic" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12,8.6 A3.4,3.4 0 1,0 12,15.4 A3.4,3.4 0 1,0 12,8.6 M12,2.5 L12,5.5 M12,18.5 L12,21.5 M2.5,12 L5.5,12 M18.5,12 L21.5,12 M5.3,5.3 L7.4,7.4 M16.6,16.6 L18.7,18.7 M18.7,5.3 L16.6,7.4 M7.4,16.6 L5.3,18.7" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" filter="url(#rough-soft)"/></svg>作業を継続</b><span>長時間かけて修正や実装を行う</span></div>
+        </div>
+        <div class="flow-step">
+          <div class="flow-no">4</div>
+          <div class="flow-body"><b><svg class="ic" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M9,4 C6,4 5,6 5,8 C3,9 3,12 5,13 C5,16 7,18 9,17 M15,4 C18,4 19,6 19,8 C21,9 21,12 19,13 C19,16 17,18 15,17 M12,4.5 L12,18" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" filter="url(#rough-soft)"/></svg>計画を維持</b><span>終盤も目的を見失わない</span></div>
+        </div>
+        <div class="flow-step">
+          <div class="flow-no">5</div>
+          <div class="flow-body"><b><svg class="ic" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4,12.5 L9.5,18 L20,5.5" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" filter="url(#rough-soft)"/></svg>根本まで解決</b><span>表面の症状でなく原因を修正</span></div>
+        </div>
+      </div>
+        <p class="fig-cap">指示を受けてから完了まで、AIが目的を見失わずに進める流れを表しています。</p>
       </div>
 
       <div class="dd-sub"><h4>使われている技術</h4><div class="r"></div></div>
       <div class="concepts">
         <div class="concept">
-          <div class="term"><b>エージェント</b><span class="plain">目的を伝えると自分で手順を考えて実行するAI</span></div>
-          <p>人が一行ずつ指示する使い方と違い、エージェントは「このバグを直して」と伝えるだけで、調べる・直す・確かめるという手順を自分で組み立てます。手順が長くなるほど途中で方針を見失いやすく、そこを崩さずに走り切れるかが、実際の仕事で使えるかどうかの分かれ目になります。</p>
+          <div class="term"><svg class="ic ic-lg" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M7,9 L17,9 L17,17 L7,17 Z M12,5 L12,9 M9.5,12.5 L9.5,13 M14.5,12.5 L14.5,13 M4,12 L7,12 M17,12 L20,12 M12,3.5 A1.4,1.4 0 1,0 12,3.6" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" filter="url(#rough-soft)"/></svg><b>エージェント</b><span class="plain">目的を伝えると自分で考えて実行するAI</span></div>
+          <p>人が一つずつ指示しなくても、コードの修正やバグ探しなど複雑な作業を自分で計画して進めるAIのことです。今回のモデルは、長い作業の途中で計画を見失わずに続けられる点が強化されました。</p>
         </div>
         <div class="concept">
-          <div class="term"><b>コンテキストウィンドウ</b><span class="plain">AIが一度に覚えていられる情報の量</span></div>
-          <p>Fable 5.1 は1Mトークン（トークンは文章を数えるときの、文字のかたまりの単位）まで扱えます。ここに入りきらない分は覚えていられないため、大きなプログラムをまとめて見ながら作業するには、この量の大きさがそのまま仕事の範囲の広さになります。</p>
+          <div class="term"><svg class="ic ic-lg" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M9,4 C6,4 5,6 5,8 C3,9 3,12 5,13 C5,16 7,18 9,17 M15,4 C18,4 19,6 19,8 C21,9 21,12 19,13 C19,16 17,18 15,17 M12,4.5 L12,18" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" filter="url(#rough-soft)"/></svg><b>コンテキストウィンドウ</b><span class="plain">AIが一度に覚えられる情報の量</span></div>
+          <p>AIは会話や作業の内容を一時的に記憶しながら処理を進めます。この記憶できる範囲を『コンテキストウィンドウ』と呼び、広いほど大きなプログラム全体を見渡しながら一貫した作業ができます。</p>
         </div>
         <div class="concept">
-          <div class="term"><b>スペック駆動ワークフロー</b><span class="plain">先に仕様を決め、それに沿って作業を進めるやり方</span></div>
-          <p>Kiro は作業を始める前に「何を作るか」を文章でまとめ、その内容に沿って進めます。Fable 5.1 では、ある進め方が失敗したと判断した場合に、行き詰まった方向で繰り返し試すことを避けます。同じ壁に何度もぶつかって時間を使う事態を防ぐためです。</p>
+          <div class="term"><svg class="ic ic-lg" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M14.5,3.5 A5,5 0 1,0 19,10.5 L20.5,12 L12,20.5 A2.1,2.1 0 1,1 9,17.5 L17.5,9 Z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" filter="url(#rough-soft)"/></svg><b>Kiro</b><span class="plain">AIを使ってコードを書く開発ツール</span></div>
+          <p>プログラマーが使う専用のソフトで、その中でAIが自動的にコードの作成や修正を行います。今回、そのソフトの中で動くAIモデルが新しいものに切り替わりました。</p>
+        </div>
+        <div class="concept">
+          <div class="term"><svg class="ic ic-lg" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12,3.5 A8.5,8.5 0 1,0 12,20.5 A8.5,8.5 0 1,0 12,3.5 M12,6.5 L12,17.5 M15,9 A3,2.2 0 0,0 9,9.4 C9,12.5 15,11.5 15,14.6 A3,2.2 0 0,1 9,15" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" filter="url(#rough-soft)"/></svg><b>利用クレジット</b><span class="plain">AIを使うごとに消費する利用量の単位</span></div>
+          <p>AIサービスは、使った分だけ『クレジット』という利用量を消費する仕組みが一般的です。新しいモデルは性能が上がった一方で、従来の6倍のクレジットを消費する設定になっています。</p>
         </div>
       </div>
 
       <div class="dd-sub"><h4>何が変わる？</h4><div class="r"></div></div>
       <div class="impacts">
-        <div class="impact"><span class="impact-who">アプリ開発者</span><span class="impact-what">バグ修正やリファクタリング（動きを変えずにコードを整理し直すこと）での正確さが上がり、何段階もある長い作業も最後まで到達しやすくなります。</span></div>
-        <div class="impact"><span class="impact-who">情報システム部門</span><span class="impact-what">AWS の管理コンソールで Model Governance を有効にし、モデル一覧で Fable 5.1 をオンにする作業が必要です。対象はエンタープライズ顧客に限られます。</span></div>
-        <div class="impact"><span class="impact-who">利用コストの管理者</span><span class="impact-what">Fable 5.1 はクレジット乗数が6倍です。同じ作業でも消費量が6倍として数えられるため、どの場面で使うかをあらかじめ決めておく必要があります。</span></div>
+        <div class="impact"><span class="impact-who"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M9,7.5 L4.5,12 L9,16.5 M15,7.5 L19.5,12 L15,16.5 M13.5,5.5 L10.5,18.5" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" filter="url(#rough-soft)"/></svg>アプリ開発者</span><span class="impact-what">大規模な修正や作り直しの作業を任せても、AIが最後まで目的を見失わず正確に仕上げてくれるようになります。</span></div>
+        <div class="impact"><span class="impact-who"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12,3 L20,6 L20,12 C20,16.5 16.5,19.8 12,21.2 C7.5,19.8 4,16.5 4,12 L4,6 Z M8.8,12 L11.2,14.4 L15.5,9.8" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" filter="url(#rough-soft)"/></svg>情報システム部門</span><span class="impact-what">セキュリティ確認の仕組みが改良され、防御目的の作業と本物の攻撃をより適切に見分けられるようになります。</span></div>
+        <div class="impact"><span class="impact-who"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12,3.5 A8.5,8.5 0 1,0 12,20.5 A8.5,8.5 0 1,0 12,3.5 M12,6.5 L12,17.5 M15,9 A3,2.2 0 0,0 9,9.4 C9,12.5 15,11.5 15,14.6 A3,2.2 0 0,1 9,15" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" filter="url(#rough-soft)"/></svg>企業の管理者</span><span class="impact-what">利用には従来の6倍のクレジットが必要になるため、導入コストの見直しが必要になります。</span></div>
       </div>
 
       <div class="dd-sub"><h4>用語メモ</h4><div class="r"></div></div>
       <div class="jargon">
-        <div><b>エージェント</b>目的を伝えると自分で手順を考えて実行するAI</div>
-        <div><b>Kiro</b>AWSが提供する、AIに開発作業を任せるための道具</div>
-        <div><b>コンテキストウィンドウ</b>AIが一度に覚えていられる情報の量</div>
-        <div><b>トークン</b>AIが文章を数えるときの単位。文字のかたまり</div>
-        <div><b>Model Governance</b>組織内でどのAIを使ってよいかを管理する設定</div>
-        <div><b>クレジット乗数</b>利用量を数えるときにかけ算される倍率</div>
+        <div><b>エージェント</b>目的を伝えると自分で考えて実行するAI</div>
+        <div><b>コンテキストウィンドウ</b>AIが一度に覚えられる情報量の範囲</div>
+        <div><b>クレジット</b>AIを使うごとに消費する利用量の単位</div>
+        <div><b>Kiro</b>AIを使ってコードを書く開発ツール</div>
+        <div><b>トークン</b>AIが文章を数える際の最小単位</div>
       </div>
 
-      <p class="nextstep"><b>次の一歩 →</b> AWS管理コンソールのKiro設定でModel Governanceを有効にし、Fable 5.1を選びます。</p>
+      <p class="nextstep"><b>次の一歩 →</b> Kiroの公式サイトで、新しいモデルの利用条件やクレジット消費量を確認してみましょう。</p>
 
       <p class="dive-src">出典: <a href="https://aws.amazon.com/jp/blogs/news/fable-5-1" target="_blank" rel="noopener noreferrer">Claude Fable 5.1 が Kiro で利用可能になりました</a>（AWS Japan Blog）</p>
     </article>
@@ -680,29 +851,81 @@ footer a{color:var(--accent-2)}
     <article class="dive a4" id="dive-aws-ml-17">
       <div class="dive-top">
         <div class="dive-no">4</div>
+        <span class="ic-xl" style="color:var(--ac)"><svg class="ic-xl" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M3.5,17.5 A9,9 0 0,1 20.5,17.5 M12,17.5 L16.5,9.5 M12,17.6 L12.1,17.6 M5.6,11.5 L6.6,12.2 M12,6 L12,7.2 M18.4,11.5 L17.4,12.2" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" filter="url(#rough-soft)"/></svg></span>
         <div>
-          <h3 class="dive-head">AIの待ち時間が約2秒に短縮</h3>
+          <h3 class="dive-head">AIの起動待ち時間が一定に短縮</h3>
           <p class="dive-meta">AWS Machine Learning Blog・9/19・原題: The new AgentCore runtime: Elastic, optimized, and consistently fast starts</p>
         </div>
       </div>
 
-      <p class="dive-hook">AWSが、AIエージェントを動かすための土台「Amazon Bedrock AgentCore」の新しい実行環境を発表しました。これまでは中身が大きいと立ち上がりに30秒近くかかることもありましたが、新しい環境では中身の大きさにかかわらず、4回に3回は約2秒で立ち上がります。使い終わった作業スペースを回収して、その分だけ料金に反映する仕組みも入りました。</p>
+      <p class="dive-hook">AWSが、AIエージェント（人の代わりに目的達成まで自分で考えて動くプログラム）を動かす裏方の仕組みを新しくしました。これまでは扱うデータの量が多いほど起動に時間がかかっていましたが、新方式では量に関係なく約2秒で起動するようになりました。本番で多数のエージェントを動かす企業にとって、待ち時間の予測がしやすくなります。</p>
 
       <div class="two">
-        <div class="panel bg"><b>そもそもの話</b>AIエージェント（目的を伝えると、人が一つずつ指示しなくても自分で手順を考えて実行するAI）を動かすには、それを置いて動かすコンピューターが必要です。AWSはその置き場所を貸し出していて、利用者は使った時間と作業スペースの量に応じてお金を払います。ただし、頼まれてから置き場所を用意して立ち上げるまでには待ち時間が生まれます。試作のうちは我慢できても、お客さん相手に使うと、この待ち時間がそのまま体験の悪さになります。</div>
-        <div class="panel an"><b>たとえるなら</b>飲食店の開店準備に似ています。毎朝ゼロから仕込むと、材料が増えるほど開店までの時間が延びてしまいます。新しい仕組みは、仕込みが終わった状態をそのまま丸ごと保存しておき、開店のたびにその状態を取り出します。材料の量が増えても保存した中身の大きさはほとんど変わらないので、開店までの時間はいつも同じです。</div>
+        <div class="panel bg"><b>エージェントの裏方とは</b>AIエージェントは、使う人がいない間はコンピューターを止めておき、必要なときだけ立ち上げる仕組みで動いています。この立ち上げには準備時間がかかり、これを「コールドスタート（電源を入れてから使えるようになるまでの待ち時間）」と呼びます。AWSはこの立ち上げを管理する土台を「AgentCoreランタイム」として提供しており、今回この仕組みが新しくなりました。</div>
+        <div class="panel an"><b>たとえるなら引っ越し準備</b>引っ越しのたびに荷物の量に合わせて新居を一から掃除し家具を配置していたら、荷物が多いほど時間がかかります。新しい仕組みは、あらかじめ用意しておいた「モデルルーム」をそのまま複製して住み始めるようなもので、荷物の量に関係なくすぐに生活を始められます。<div class="analogy-strip">
+            <figure><svg class="ic ic-lg" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4,7.5 L12,3.5 L20,7.5 L20,16.5 L12,20.5 L4,16.5 Z M4,7.5 L12,11.5 L20,7.5 M12,11.5 L12,20.5" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" filter="url(#rough-soft)"/></svg><figcaption>毎回一から準備</figcaption></figure>
+            
+<svg class="gr-arrow-r" viewBox="0 0 64 40" aria-hidden="true">
+  <path d="M4,20 C20,14 34,26 58,19" fill="none" stroke="currentColor" stroke-width="3"
+        stroke-linecap="round" marker-end="url(#arrowhead)" filter="url(#rough-soft)"/>
+</svg>
+            <figure><svg class="ic ic-lg" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4,12.5 L9.5,18 L20,5.5" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" filter="url(#rough-soft)"/></svg><figcaption>コピーで即入居</figcaption></figure>
+          </div></div>
+      </div>
+
+      <div class="dd-sub"><h4>数字で見る</h4><div class="r"></div></div>
+      <div class="metrics">
+        <div class="metric">
+          <div class="metric-head"><svg class="ic ic-lg" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12,3.5 A8.5,8.5 0 1,0 12,20.5 A8.5,8.5 0 1,0 12,3.5 M12,7.5 L12,12 L15.5,14.2" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" filter="url(#rough-soft)"/></svg><b>起動時間(小さい構成)</b></div>
+          <div class="metric-row">
+            <span class="metric-tag">これまで</span>
+            <span class="metric-bar was"><i style="width:100%"></i></span>
+            <span class="metric-val">5.4秒</span>
+          </div>
+          <div class="metric-row">
+            <span class="metric-tag">これから</span>
+            <span class="metric-bar now"><i style="width:37%"></i></span>
+            <span class="metric-val">2秒</span>
+          </div>
+          <span class="metric-delta"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12,4 L12,19 M6,13 L12,19.5 L18,13" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" filter="url(#rough-soft)"/></svg>63% 減</span>
+          
+        </div>
+        <div class="metric">
+          <div class="metric-head"><svg class="ic ic-lg" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12,3.5 A8.5,8.5 0 1,0 12,20.5 A8.5,8.5 0 1,0 12,3.5 M12,7.5 L12,12 L15.5,14.2" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" filter="url(#rough-soft)"/></svg><b>起動時間(大きい構成)</b></div>
+          <div class="metric-row">
+            <span class="metric-tag">これまで</span>
+            <span class="metric-bar was"><i style="width:100%"></i></span>
+            <span class="metric-val">30秒</span>
+          </div>
+          <div class="metric-row">
+            <span class="metric-tag">これから</span>
+            <span class="metric-bar now"><i style="width:7%"></i></span>
+            <span class="metric-val">2秒</span>
+          </div>
+          <span class="metric-delta"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12,4 L12,19 M6,13 L12,19.5 L18,13" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" filter="url(#rough-soft)"/></svg>93% 減</span>
+          
+        </div>
+        <div class="metric">
+          <div class="metric-head"><svg class="ic ic-lg" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M3.5,17.5 A9,9 0 0,1 20.5,17.5 M12,17.5 L16.5,9.5 M12,17.6 L12.1,17.6 M5.6,11.5 L6.6,12.2 M12,6 L12,7.2 M18.4,11.5 L17.4,12.2" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" filter="url(#rough-soft)"/></svg><b>本体の処理時間</b></div>
+          <p class="metric-big"><strong>34</strong><span>ミリ秒</span></p>
+          <p class="metric-note">起動後にエージェント自体が動く時間</p>
+        </div>
+        <div class="metric">
+          <div class="metric-head"><svg class="ic ic-lg" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4,20 L20,20 M6.5,20 L6.5,13 L9.5,13 L9.5,20 M11,20 L11,8.5 L14,8.5 L14,20 M15.5,20 L15.5,11 L18.5,11 L18.5,20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" filter="url(#rough-soft)"/></svg><b>検証した起動回数</b></div>
+          <p class="metric-big"><strong>5,000</strong><span>回</span></p>
+          <p class="metric-note">地域をまたぐ起動で計測</p>
+        </div>
       </div>
 
       <div class="dd-sub"><h4>図で見る</h4><div class="r"></div></div>
       <div class="fig">
-        <p class="fig-title">起動と料金の変わり方</p>
+        <p class="fig-title">起動の仕組みの変化</p>
         <div class="cmp">
         <div class="cmp-col was">
           <h5>これまで</h5>
-          <div class="cmp-item"><b>毎回ゼロ起動</b><span>頼まれるたびに一から立ち上げる</span></div>
-          <div class="cmp-item"><b>最大30秒</b><span>中身が大きいほど待ち時間が延びる</span></div>
-          <div class="cmp-item"><b>ピーク課金</b><span>一番使った量を終わるまで払い続ける</span></div>
-          <div class="cmp-item"><b>待機を自作</b><span>予備を常に空けて待たせる工夫が要る</span></div>
+          <div class="cmp-item"><b><svg class="ic" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12,3.5 A8.5,8.5 0 1,0 12,20.5 A8.5,8.5 0 1,0 12,3.5 M12,7.5 L12,12 L15.5,14.2" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" filter="url(#rough-soft)"/></svg>毎回一から準備</b><span>起動のたびにゼロから立ち上げていた</span></div>
+          <div class="cmp-item"><b><svg class="ic" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5,6 C5,4.3 8.1,3 12,3 C15.9,3 19,4.3 19,6 C19,7.7 15.9,9 12,9 C8.1,9 5,7.7 5,6 Z M5,6 L5,18 C5,19.7 8.1,21 12,21 C15.9,21 19,19.7 19,18 L19,6 M5,12 C5,13.7 8.1,15 12,15 C15.9,15 19,13.7 19,12" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" filter="url(#rough-soft)"/></svg>使い切るまで保持</b><span>使い終わるまでメモリを離さない</span></div>
+          <div class="cmp-item"><b><svg class="ic" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12,3.5 L21.5,20 L2.5,20 Z M12,9.5 L12,14.5 M12,17 L12,17.6" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" filter="url(#rough-soft)"/></svg>量が多いと遅い</b><span>大きい構成だと最大30秒かかる</span></div>
         </div>
         <div class="cmp-mid">
 <svg class="gr-arrow-r" viewBox="0 0 64 40" aria-hidden="true">
@@ -715,52 +938,52 @@ footer a{color:var(--accent-2)}
 </svg></div>
         <div class="cmp-col now">
           <h5>これから</h5>
-          <div class="cmp-item"><b>状態を保存</b><span>立ち上げ済みの状態を丸ごと保存する</span></div>
-          <div class="cmp-item"><b>約2秒</b><span>中身が200MBでも2GBでも同じ</span></div>
-          <div class="cmp-item"><b>使った分</b><span>冷えた作業スペースは回収される</span></div>
+          <div class="cmp-item"><b><svg class="ic" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M20,7.5 A8.5,8.5 0 1,0 20.6,14.6 M20,3.5 L20,8 L15.5,8" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" filter="url(#rough-soft)"/></svg>複製して起動</b><span>準備済みの状態をコピーして復元</span></div>
+          <div class="cmp-item"><b><svg class="ic" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4,12.5 L9.5,18 L20,5.5" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" filter="url(#rough-soft)"/></svg>使う分だけ確保</b><span>不要になった分はすぐ手放す</span></div>
+          <div class="cmp-item"><b><svg class="ic" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M3.5,17.5 A9,9 0 0,1 20.5,17.5 M12,17.5 L16.5,9.5 M12,17.6 L12.1,17.6 M5.6,11.5 L6.6,12.2 M12,6 L12,7.2 M18.4,11.5 L17.4,12.2" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" filter="url(#rough-soft)"/></svg>常に約2秒</b><span>構成の大きさに関係なく安定</span></div>
         </div>
       </div>
-        <p class="fig-cap">左が新しい仕組みが入る前、右が入った後の姿です。</p>
+        <p class="fig-cap">これまでとこれからで、起動にかかる時間とメモリの扱いがどう変わったかを示しています。</p>
       </div>
 
       <div class="dd-sub"><h4>使われている技術</h4><div class="r"></div></div>
       <div class="concepts">
         <div class="concept">
-          <div class="term"><b>AIエージェント</b><span class="plain">目的を伝えると自分で手順を考えて実行するAI</span></div>
-          <p>チャットのAIは質問に答えるだけですが、エージェントは調べ物や申し込みなどの作業を自分で順番に進めます。人の代わりに動き続けるため、いつでも動かせるコンピューターの置き場所が必要になり、その置き場所の速さと料金が使い勝手を大きく左右します。</p>
+          <div class="term"><svg class="ic ic-lg" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4,4.5 L20,4.5 L20,10 L4,10 Z M4,14 L20,14 L20,19.5 L4,19.5 Z M7,7.2 L7.6,7.2 M7,16.7 L7.6,16.7 M11,7.2 L16.5,7.2 M11,16.7 L16.5,16.7" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" filter="url(#rough-soft)"/></svg><b>AgentCoreランタイム</b><span class="plain">AIエージェントを裏で動かす、AWSが管理する実行環境</span></div>
+          <p>エージェントを動かすには裏側でコンピューターを用意し続ける必要がありますが、企業自身がそれを構築・保守しなくて済むように、AWSがまるごと管理してくれる土台です。今回この土台の仕組みが刷新されました。</p>
         </div>
         <div class="concept">
-          <div class="term"><b>コールドスタート</b><span class="plain">置き場所を一から立ち上げるときの待ち時間</span></div>
-          <p>止まっている状態から動く状態にするには、置き場所を用意して中のプログラムを読み込む必要があります。これまでのAgentCoreでは、中身が200MBなら約5.4秒、2GB近くになると30秒近くかかっていました。人が画面の前で待つ用途では致命的な長さです。</p>
+          <div class="term"><svg class="ic ic-lg" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12,3.5 A8.5,8.5 0 1,0 12,20.5 A8.5,8.5 0 1,0 12,3.5 M12,7.5 L12,12 L15.5,14.2" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" filter="url(#rough-soft)"/></svg><b>コールドスタート</b><span class="plain">止まっていたシステムを使い始める最初の待ち時間</span></div>
+          <p>使われていない間は電気代やコストを抑えるためコンピューターを止めておき、必要になったときだけ起動します。この起動にかかる待ち時間が長いと、利用者は最初の応答を待たされてしまいます。</p>
         </div>
         <div class="concept">
-          <div class="term"><b>スナップショット</b><span class="plain">立ち上げ終わった状態をそのまま保存したもの</span></div>
-          <p>新しい実行環境は、置き場所を一度立ち上げて正常に動くと確認できた時点の状態を、丸ごと保存します。次からは一から立ち上げずに、この状態を戻すだけで済みます。保存するときに一時的なデータを取り除くため、中身が大きくなっても保存物の大きさはほとんど変わりません。</p>
+          <div class="term"><svg class="ic ic-lg" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M20,7.5 A8.5,8.5 0 1,0 20.6,14.6 M20,3.5 L20,8 L15.5,8" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" filter="url(#rough-soft)"/></svg><b>スナップショット復元</b><span class="plain">準備済みの状態を写真のように保存し、コピーして使う方式</span></div>
+          <p>エージェントの初期設定を毎回一からやり直すのではなく、一度準備が終わった状態を保存しておき、必要なときにその状態を複製して復元します。これにより扱うデータの量に関係なく同じ速さで起動できます。</p>
         </div>
         <div class="concept">
-          <div class="term"><b>使った分だけの課金</b><span class="plain">実際に使った作業スペースの分だけ払う仕組み</span></div>
-          <p>これまでは一度使った最大量を、そのやりとりが終わるまで確保し続け、その分を払い続けていました。新しい実行環境は小さく始めて、必要になった分だけ足していきます。使い終わって冷えた分は回収され、単価は上がるものの、払う量そのものが減ります。</p>
+          <div class="term"><svg class="ic ic-lg" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5,6 C5,4.3 8.1,3 12,3 C15.9,3 19,4.3 19,6 C19,7.7 15.9,9 12,9 C8.1,9 5,7.7 5,6 Z M5,6 L5,18 C5,19.7 8.1,21 12,21 C15.9,21 19,19.7 19,18 L19,6 M5,12 C5,13.7 8.1,15 12,15 C15.9,15 19,13.7 19,12" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" filter="url(#rough-soft)"/></svg><b>メモリのページング</b><span class="plain">使わなくなった分だけこまめにメモリを返す仕組み</span></div>
+          <p>これまではエージェントが使い終わるまで、必要な最大量のメモリ（作業スペース）を確保したままにしていました。新しい仕組みでは、必要な分だけ使い、不要になった分はすぐに返すため、無駄が減ります。</p>
         </div>
       </div>
 
       <div class="dd-sub"><h4>何が変わる？</h4><div class="r"></div></div>
       <div class="impacts">
-        <div class="impact"><span class="impact-who">アプリ開発者</span><span class="impact-what">起動を速く見せるために予備の環境を常に待機させる工夫が要らなくなり、待ち時間の調整ではなく中身の作り込みに時間を使えます。</span></div>
-        <div class="impact"><span class="impact-who">サービス運営者</span><span class="impact-what">利用者を待たせる時間が30秒近くから約2秒にそろうため、その場で応答が返る対話型の機能でも、途中で離脱されにくくなります。</span></div>
-        <div class="impact"><span class="impact-who">情報システム部門</span><span class="impact-what">一番多く使った量を使い終わるまで払う形から、実際に使った分を払う形に変わるため、使い方にムラのあるエージェントほど請求額が読みやすくなります。</span></div>
+        <div class="impact"><span class="impact-who"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M9,7.5 L4.5,12 L9,16.5 M15,7.5 L19.5,12 L15,16.5 M13.5,5.5 L10.5,18.5" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" filter="url(#rough-soft)"/></svg>アプリ開発者</span><span class="impact-what">エージェントの構成を大きくしても起動が遅くならないため、機能を増やすことに集中できます。</span></div>
+        <div class="impact"><span class="impact-who"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4,4.5 L20,4.5 L20,10 L4,10 Z M4,14 L20,14 L20,19.5 L4,19.5 Z M7,7.2 L7.6,7.2 M7,16.7 L7.6,16.7 M11,7.2 L16.5,7.2 M11,16.7 L16.5,16.7" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" filter="url(#rough-soft)"/></svg>情報システム部門</span><span class="impact-what">使わない分のメモリをすぐ手放す仕組みにより、多数のエージェントを動かしてもコスト効率が上がります。</span></div>
+        <div class="impact"><span class="impact-who"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12,4 A3.6,3.6 0 1,0 12,11.2 A3.6,3.6 0 1,0 12,4 M4.5,20.5 C4.5,16.2 7.9,13.5 12,13.5 C16.1,13.5 19.5,16.2 19.5,20.5" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" filter="url(#rough-soft)"/></svg>一般利用者</span><span class="impact-what">チャットボットなどエージェント機能を使うときの最初の待ち時間が、混み具合に関係なく安定します。</span></div>
       </div>
 
       <div class="dd-sub"><h4>用語メモ</h4><div class="r"></div></div>
       <div class="jargon">
-        <div><b>ランタイム</b>プログラムを実際に動かすための土台となる仕組み</div>
-        <div><b>コンテナイメージ</b>動かしたいプログラムと必要な部品を一つにまとめた荷物</div>
-        <div><b>コールドスタート</b>止まった状態から動き出すまでにかかる待ち時間</div>
-        <div><b>P75</b>4回に3回はこの時間内に収まる、という目安の値</div>
-        <div><b>セッション</b>話しかけてから終わるまでの、ひとまとまりのやりとり</div>
-        <div><b>platformVersion</b>新しい実行環境を使うと指定するための設定項目</div>
+        <div><b>エージェント</b>目的を伝えると自分で手順を考えて動くAIプログラム</div>
+        <div><b>ランタイム</b>プログラムを実際に動かすための裏方の実行環境</div>
+        <div><b>コールドスタート</b>止まっていたシステムが使えるようになるまでの待ち時間</div>
+        <div><b>スナップショット</b>ある時点の状態をそのまま保存したもの</div>
+        <div><b>セッション</b>利用者が使い始めてから終わるまでの一続きのやり取り</div>
+        <div><b>P75</b>計測した中で速い方から75%が収まる時間の目安</div>
       </div>
 
-      <p class="nextstep"><b>次の一歩 →</b> ランタイム作成時にplatformVersionをV2と指定し、起動時間を比べてみましょう。</p>
+      <p class="nextstep"><b>次の一歩 →</b> AWSのAmazon Bedrock AgentCoreのドキュメントで対応リージョンと料金を確認してみましょう。</p>
 
       <p class="dive-src">出典: <a href="https://aws.amazon.com/blogs/machine-learning/the-new-agentcore-runtime-elastic-optimized-and-consistently-fast-starts" target="_blank" rel="noopener noreferrer">The new AgentCore runtime: Elastic, optimized, and consistently fast starts</a>（AWS Machine Learning Blog）</p>
     </article>
@@ -768,83 +991,105 @@ footer a{color:var(--accent-2)}
     <article class="dive a5" id="dive-anthropic-2">
       <div class="dive-top">
         <div class="dive-no">5</div>
+        <span class="ic-xl" style="color:var(--ac)"><svg class="ic-xl" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12,3 L20,6 L20,12 C20,16.5 16.5,19.8 12,21.2 C7.5,19.8 4,16.5 4,12 L4,6 Z M8.8,12 L11.2,14.4 L15.5,9.8" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" filter="url(#rough-soft)"/></svg></span>
         <div>
-          <h3 class="dive-head">審査を通った研究者だけ、AIの制限を解除</h3>
+          <h3 class="dive-head">生命科学研究者向けAIの制限を緩和</h3>
           <p class="dive-meta">Anthropic News・9/17・原題: Introducing the Life Sciences Verification Program</p>
         </div>
       </div>
 
-      <p class="dive-hook">Anthropicは9月17日、生命科学（生き物のしくみを調べる研究）の専門家に向けて、審査を通った人だけAIの答えを断る制限をゆるめる仕組みを始めました。これまでAIは、悪用を防ぐために生物学の質問を幅広く断っていました。これからは研究実績や安全管理の体制を先に確かめ、確認できた組織にだけ許可を出します。</p>
+      <p class="dive-hook">Anthropicは、生命科学の研究者向けに、審査に通ればAIの安全のための制限を一部外して使える新しい仕組みを始めました。対象は大学やスタートアップ、製薬会社などで、通常の利用は1年ごと、特に慎重な扱いが必要な利用は半年ごとに審査をやり直します。すでに数十の組織が試験的に利用を始めています。</p>
 
       <div class="two">
-        <div class="panel bg"><b>なぜ断られるのか</b>AIは生物に関する質問の一部を、はじめから断るように作られています。病気やウイルスのしくみに詳しい知識は、悪用されると人を傷つける道具にもなり得るからです。ただこの線引きは機械的で、正当な研究者の質問まで巻き込んで断ってしまいます。そこで「誰が何のために聞いているのか」を先に確かめ、確認できた相手には断りを減らす、という発想が出てきました。</div>
-        <div class="panel an"><b>たとえるなら薬局</b>街の薬局では、強い薬を誰にでも売ることはしません。とはいえ、本当に必要な患者まで買えないのでは困ります。そこで医師の処方箋を確かめ、確認できた人にだけ渡します。今回の仕組みも同じで、AIが誰にでもは渡さない答えを、所属と目的を確かめた研究者にだけ渡すようにしたものです。処方箋の有効期限のように、許可にも期限があります。</div>
-      </div>
-
-      <div class="dd-sub"><h4>図で見る</h4><div class="r"></div></div>
-      <div class="fig">
-        <p class="fig-title">断る判断をいつ行うか</p>
-        <div class="cmp">
-        <div class="cmp-col was">
-          <h5>これまで</h5>
-          <div class="cmp-item"><b>質問する</b><span>研究者が生物学の質問を送る</span></div>
-          <div class="cmp-item"><b>その場で判定</b><span>危ない話題かを瞬時に見分ける</span></div>
-          <div class="cmp-item"><b>回答を拒否</b><span>正当な研究の質問まで断られる</span></div>
-        </div>
-        <div class="cmp-mid">
+        <div class="panel bg"><b>AIの安全装置とは</b>AIには危険な使い方を防ぐための安全装置（セーフガード）が組み込まれています。たとえば病原体の作り方や毒性の強い化学物質の合成方法など、生物兵器につながりかねない質問には答えないよう制限されています。この制限は一般利用者を守る一方で、正規の研究者が新薬開発などの正当な研究をする際にも同じ制限がかかってしまうという課題がありました。</div>
+        <div class="panel an"><b>図書館の特別閲覧室</b>多くの図書館には、貴重な資料や取り扱いに注意が必要な資料を保管する特別閲覧室があります。誰でも入れるわけではなく、身分を確認され、利用目的を審査されてはじめて司書が鍵を貸してくれます。今回の仕組みも同じで、審査に通った研究者だけが、通常は閲覧できない資料に近い『制限を外したAI』を使えるようになります。<div class="analogy-strip">
+            <figure><svg class="ic ic-lg" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M6,11 L18,11 L18,20.5 L6,20.5 Z M8.5,11 L8.5,7.5 A3.5,3.5 0 0,1 15.5,7.5 L15.5,11 M12,14.5 L12,17" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" filter="url(#rough-soft)"/></svg><figcaption>閲覧制限あり</figcaption></figure>
+            
 <svg class="gr-arrow-r" viewBox="0 0 64 40" aria-hidden="true">
   <path d="M4,20 C20,14 34,26 58,19" fill="none" stroke="currentColor" stroke-width="3"
         stroke-linecap="round" marker-end="url(#arrowhead)" filter="url(#rough-soft)"/>
 </svg>
-<svg class="gr-arrow" viewBox="0 0 40 64" aria-hidden="true">
-  <path d="M20,4 C14,20 26,34 19,58" fill="none" stroke="currentColor" stroke-width="3"
-        stroke-linecap="round" marker-end="url(#arrowhead)" filter="url(#rough-soft)"/>
-</svg></div>
-        <div class="cmp-col now">
-          <h5>これから</h5>
-          <div class="cmp-item"><b>事前審査</b><span>研究実績と安全管理の体制を確認</span></div>
-          <div class="cmp-item"><b>許可証を発行</b><span>標準は1年、高リスクは6カ月</span></div>
-          <div class="cmp-item"><b>制限を緩和</b><span>生物学の質問にも答えられる</span></div>
-          <div class="cmp-item"><b>あとで点検</b><span>30日保存し目的どおりか確かめる</span></div>
+            <figure><svg class="ic ic-lg" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M15.5,4 A4.6,4.6 0 1,1 11.4,10.9 L4,18.3 L4,21 L7,21 L7,18.5 L9.5,18.5 L9.5,16 L12,16 L13.2,14.8 A4.6,4.6 0 0,1 15.5,4 M16.5,8.2 L16.6,8.2" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" filter="url(#rough-soft)"/></svg><figcaption>審査後に閲覧可</figcaption></figure>
+          </div></div>
+      </div>
+
+      <div class="dd-sub"><h4>数字で見る</h4><div class="r"></div></div>
+      <div class="metrics">
+        <div class="metric">
+          <div class="metric-head"><svg class="ic ic-lg" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12,3.5 A8.5,8.5 0 1,0 12,20.5 A8.5,8.5 0 1,0 12,3.5 M12,7.5 L12,12 L15.5,14.2" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" filter="url(#rough-soft)"/></svg><b>標準利用の更新周期</b></div>
+          <p class="metric-big"><strong>12</strong><span>ヶ月</span></p>
+          <p class="metric-note">年1回、資格を確認し直す</p>
+        </div>
+        <div class="metric">
+          <div class="metric-head"><svg class="ic ic-lg" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M20,7.5 A8.5,8.5 0 1,0 20.6,14.6 M20,3.5 L20,8 L15.5,8" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" filter="url(#rough-soft)"/></svg><b>高リスク利用の更新周期</b></div>
+          <p class="metric-big"><strong>6</strong><span>ヶ月</span></p>
+          <p class="metric-note">半年ごとに再審査が必要</p>
+        </div>
+        <div class="metric">
+          <div class="metric-head"><svg class="ic ic-lg" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4,8 L12,4 L20,8 L20,16 L12,20 L4,16 Z M4,8 L12,12 L20,8 M12,12 L12,20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" filter="url(#rough-soft)"/></svg><b>利用できるモデル数</b></div>
+          <p class="metric-big"><strong>3</strong><span>種類</span></p>
+          <p class="metric-note">Mythos・Opus・Sonnet</p>
         </div>
       </div>
-        <p class="fig-cap">左が従来のやり方、右が審査を通った研究者に適用される新しい流れです。</p>
+
+      <div class="dd-sub"><h4>図で見る</h4><div class="r"></div></div>
+      <div class="fig">
+        <p class="fig-title">審査から更新までの流れ</p>
+        <div class="flow">
+        <div class="flow-step">
+          <div class="flow-no">1</div>
+          <div class="flow-body"><b><svg class="ic" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M6,3 L14,3 L18,7 L18,21 L6,21 Z M14,3 L14,7 L18,7 M9,12 L15,12 M9,16 L15,16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" filter="url(#rough-soft)"/></svg>申請</b><span>研究資格などを提出する</span></div>
+        </div>
+        <div class="flow-step">
+          <div class="flow-no">2</div>
+          <div class="flow-body"><b><svg class="ic" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M2.5,12 C5.5,7.5 8.8,5.5 12,5.5 C15.2,5.5 18.5,7.5 21.5,12 C18.5,16.5 15.2,18.5 12,18.5 C8.8,18.5 5.5,16.5 2.5,12 Z M12,9.2 A2.8,2.8 0 1,0 12,14.8 A2.8,2.8 0 1,0 12,9.2" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" filter="url(#rough-soft)"/></svg>審査</b><span>資格やセキュリティを確認</span></div>
+        </div>
+        <div class="flow-step">
+          <div class="flow-no">3</div>
+          <div class="flow-body"><b><svg class="ic" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M15.5,4 A4.6,4.6 0 1,1 11.4,10.9 L4,18.3 L4,21 L7,21 L7,18.5 L9.5,18.5 L9.5,16 L12,16 L13.2,14.8 A4.6,4.6 0 0,1 15.5,4 M16.5,8.2 L16.6,8.2" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" filter="url(#rough-soft)"/></svg>承認・利用</b><span>制限を緩めたAIを使える</span></div>
+        </div>
+        <div class="flow-step">
+          <div class="flow-no">4</div>
+          <div class="flow-body"><b><svg class="ic" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12,3.5 A8.5,8.5 0 1,0 12,20.5 A8.5,8.5 0 1,0 12,3.5 M12,7.5 L12,12 L15.5,14.2" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" filter="url(#rough-soft)"/></svg>期限到来</b><span>6か月〜1年で更新が必要</span></div>
+        </div>
+      </div>
+      <p class="cyc-loop"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M20,7.5 A8.5,8.5 0 1,0 20.6,14.6 M20,3.5 L20,8 L15.5,8" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" filter="url(#rough-soft)"/></svg>最後まで進んだら、また 1 に戻って繰り返します</p>
+        <p class="fig-cap">審査を受けて許可が出ても、期限が来たら再び審査を受け直す仕組みです。</p>
       </div>
 
       <div class="dd-sub"><h4>使われている技術</h4><div class="r"></div></div>
       <div class="concepts">
         <div class="concept">
-          <div class="term"><b>セーフガード（安全制御）</b><span class="plain">AIが危ない質問に答えないようにする仕組み</span></div>
-          <p>AIの本体は学習した知識をそのまま出そうとするため、外側に「この話題には答えない」という関所を置いています。生物学は医療にも兵器にも使えるので、この関所がとりわけ厳しく働きます。今回のプログラムは、審査を通った相手に限ってこの関所をゆるめるものです。</p>
+          <div class="term"><svg class="ic ic-lg" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12,3 L20,6 L20,12 C20,16.5 16.5,19.8 12,21.2 C7.5,19.8 4,16.5 4,12 L4,6 Z M8.8,12 L11.2,14.4 L15.5,9.8" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" filter="url(#rough-soft)"/></svg><b>セーフガード</b><span class="plain">AIが危険な使い方を拒否する安全装置</span></div>
+          <p>AIが病原体の作り方など、悪用されると人に危害を与えかねない質問に答えてしまわないように設けられた制限のことです。安全のためですが、正規の研究者が正当な研究をする際にも同じ制限がかかってしまうことがあり、今回のプログラムはその課題への対応です。</p>
         </div>
         <div class="concept">
-          <div class="term"><b>グラント（利用許可）</b><span class="plain">誰が何にAIを使ってよいかを定めた許可証</span></div>
-          <p>許可は2種類あります。基礎研究から製造、臨床開発、規制対応、投資までをチーム単位で広くカバーする標準利用グラントは、1年ごとの更新です。生物学の制限をすべて外す高リスク利用グラントは、チームではなく研究プロジェクト1件ごとに与えられ、6カ月ごとに更新します。</p>
+          <div class="term"><svg class="ic ic-lg" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4,12.5 L9.5,18 L20,5.5" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" filter="url(#rough-soft)"/></svg><b>審査制度（Verification Program）</b><span class="plain">資格を確認してから特別な許可を出す仕組み</span></div>
+          <p>研究資格やセキュリティ体制、倫理面での研究監督などをAnthropicが確認したうえで、通常より制限の少ないAIの利用を許可する制度です。誰でも使えるわけではなく、審査に通った組織だけが対象になります。</p>
         </div>
         <div class="concept">
-          <div class="term"><b>オフライン監視</b><span class="plain">その場で止めず、後からやり取りを点検するやり方</span></div>
-          <p>これまでは質問が来た瞬間に危ないかどうかを判定し、その場で止めていました。このプログラムでは判定を後ろにずらし、申請した目的どおりに使われているかを後から確かめます。そのためやり取りは30日間保存されますが、この記録は厳重に分けて管理され、モデルの学習には使われません。</p>
+          <div class="term"><svg class="ic ic-lg" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4,8 L12,4 L20,8 L20,16 L12,20 L4,16 Z M4,8 L12,12 L20,8 M12,12 L12,20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" filter="url(#rough-soft)"/></svg><b>モデル</b><span class="plain">会話や作業をするAI本体のこと</span></div>
+          <p>今回のプログラムでは、Mythos・Opus・Sonnetという3種類のAIモデルが利用できます。モデルによって得意なことや性能が異なり、研究内容に応じて選べるようになっています。</p>
         </div>
       </div>
 
       <div class="dd-sub"><h4>何が変わる？</h4><div class="r"></div></div>
       <div class="impacts">
-        <div class="impact"><span class="impact-who">生命科学の研究者</span><span class="impact-what">ウイルスや遺伝子についての質問が断られにくくなります。所属や研究実績、倫理面の審査を通ることが条件で、標準の許可は1年ごとに更新します。</span></div>
-        <div class="impact"><span class="impact-who">企業の情シス部門</span><span class="impact-what">申請はチームや組織の単位で行い、EnterpriseプランかTeamプランが必要です。やり取りが30日間保存されるため、社内の情報管理の取り決めを見直す必要があります。</span></div>
-        <div class="impact"><span class="impact-who">一般の利用者</span><span class="impact-what">今のところ個人向けプランは対象外で、普段の使い方は変わりません。制限をゆるめる相手を審査で絞り込むことで、誰でも使える窓口の安全は保たれます。</span></div>
+        <div class="impact"><span class="impact-who"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M9.5,3 L14.5,3 M10.5,3 L10.5,9.5 L4.8,18.8 A1.6,1.6 0 0,0 6.2,21.2 L17.8,21.2 A1.6,1.6 0 0,0 19.2,18.8 L13.5,9.5 L13.5,3 M7.6,15.5 L16.4,15.5" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" filter="url(#rough-soft)"/></svg>製薬企業の研究者</span><span class="impact-what">審査を通れば、薬の候補探索や臨床開発に関する質問でも、通常はブロックされる内容までAIに相談できるようになります。</span></div>
+        <div class="impact"><span class="impact-who"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4,5 C7,3.6 10,3.6 12,5 C14,3.6 17,3.6 20,5 L20,19 C17,17.6 14,17.6 12,19 C10,17.6 7,17.6 4,19 Z M12,5 L12,19" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" filter="url(#rough-soft)"/></svg>大学の研究チーム</span><span class="impact-what">学術機関もプログラムの対象になり、生物学研究にAIを使う際の制限が緩和され、研究を進めやすくなります。</span></div>
+        <div class="impact"><span class="impact-who"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12,3 L20,6 L20,12 C20,16.5 16.5,19.8 12,21.2 C7.5,19.8 4,16.5 4,12 L4,6 Z M8.8,12 L11.2,14.4 L15.5,9.8" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" filter="url(#rough-soft)"/></svg>情報システム部門</span><span class="impact-what">審査にはセキュリティ基準や倫理面の確認が含まれるため、社内の体制整備や申請書類の準備負担が増える可能性があります。</span></div>
       </div>
 
       <div class="dd-sub"><h4>用語メモ</h4><div class="r"></div></div>
       <div class="jargon">
-        <div><b>生命科学</b>生き物のしくみを調べる学問。医療や農業、創薬の土台になる</div>
-        <div><b>モデル</b>大量の文章で学習させた、AIの本体にあたるプログラム</div>
-        <div><b>セーフガード</b>AIが危険な内容に答えないよう、外側に置いた制限の仕組み</div>
-        <div><b>グラント</b>誰が何にAIを使ってよいかを定めた、期限つきの利用許可</div>
-        <div><b>オフライン監視</b>その場で止めず、後から記録を点検して不正を見つけるやり方</div>
-        <div><b>Enterprise／Teamプラン</b>組織向けの契約。今回のプログラムはこの契約から申し込む</div>
+        <div><b>セーフガード</b>AIが危険な使い方を拒否する制限機能</div>
+        <div><b>Verification Program</b>資格を審査してから特別な許可を出す制度</div>
+        <div><b>モデル</b>AIの頭脳にあたるプログラム本体</div>
+        <div><b>Enterprise/Teamプラン</b>企業や部署単位で契約するAI利用プラン</div>
+        <div><b>高リスク利用</b>特に慎重な扱いが必要な単一プロジェクト向け区分</div>
       </div>
 
-      <p class="nextstep"><b>次の一歩 →</b> 所属先が対象なら、Anthropicの申請フォームから組織単位で応募できます。</p>
+      <p class="nextstep"><b>次の一歩 →</b> 所属組織が生命科学系なら、審査条件を公式ページで確認してみましょう。</p>
 
       <p class="dive-src">出典: <a href="https://www.anthropic.com/news/life-sciences-verification-program" target="_blank" rel="noopener noreferrer">Introducing the Life Sciences Verification Program</a>（Anthropic News）</p>
     </article>
@@ -857,7 +1102,7 @@ footer a{color:var(--accent-2)}
 
 
   <footer>
-    生成: 2026-09-21T08:47:22.720Z<br>
+    生成: 2026-09-21T09:04:32.851Z<br>
     <a href="https://github.com/kskrm/claude-agent-sdk-demo">kskrm/claude-agent-sdk-demo</a> ・ Claude Code Routine による自動生成
   </footer>
 </div>

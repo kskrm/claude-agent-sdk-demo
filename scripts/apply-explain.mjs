@@ -8,6 +8,7 @@
 import { readFile, writeFile, readdir } from 'node:fs/promises';
 import { resolve } from 'node:path';
 import { jstDateString } from './lib/util.mjs';
+import { isKnownIcon } from './lib/icons.mjs';
 
 const args = Object.fromEntries(
   process.argv.slice(2).reduce((acc, cur, i, arr) => {
@@ -24,12 +25,53 @@ const byId = new Map(report.topics.map((t) => [t.id, t]));
 const str = (v, max) => (typeof v === 'string' ? v.trim().slice(0, max) : '');
 const arr = (v) => (Array.isArray(v) ? v : []);
 
-const DIAGRAM_TYPES = new Set(['flow', 'compare', 'layers']);
+const DIAGRAM_TYPES = new Set(['flow', 'compare', 'layers', 'cycle']);
+
+/** 一覧にないアイコン名は捨てる（描画側で省かれる） */
+const ico = (v) => (isKnownIcon(v) ? v : '');
+
+/** 数値として扱えるものだけ通す */
+const num = (v) => (typeof v === 'number' && Number.isFinite(v) ? v : null);
+
+/**
+ * 数値の視覚化データを検証する。
+ * before/after 形式は改善率を、value 形式はそのままの数値を扱う。
+ */
+function normalizeMetrics(v) {
+  return arr(v)
+    .map((m) => {
+      const label = str(m?.label, 24);
+      if (!label) return null;
+      const base = { label, icon: ico(m?.icon), unit: str(m?.unit, 16), note: str(m?.note, 60) };
+      const before = num(m?.before);
+      const after = num(m?.after);
+      if (before !== null && after !== null && before !== after && before > 0 && after >= 0) {
+        const betterIs = m?.betterIs === 'high' ? 'high' : 'low';
+        // 「93%短縮」「4.1倍」のような一言を決定論的に作る
+        let delta;
+        if (betterIs === 'low') {
+          const pct = (1 - after / before) * 100;
+          // 99.85% を「100% 減」と書くとゼロになったように読めるので、そこだけ小数で出す
+          const text = after > 0 && pct > 99 ? `${Math.min(99.9, Number(pct.toFixed(1)))}% 減` : `${Math.round(pct)}% 減`;
+          delta = { kind: 'reduce', text };
+        } else {
+          const ratio = after / before;
+          delta = { kind: 'grow', text: `${ratio.toFixed(ratio >= 10 ? 0 : 1)} 倍` };
+        }
+        return { ...base, kind: 'delta', before, after, betterIs, delta };
+      }
+      const value = num(m?.value);
+      if (value !== null) return { ...base, kind: 'value', value };
+      return null;
+    })
+    .filter(Boolean)
+    .slice(0, 4);
+}
 
 /** ノード配列を {label, note} に正規化。ラベルが無いものは捨てる。 */
 function normalizeNodes(v, max) {
   return arr(v)
-    .map((n) => ({ label: str(n?.label, 24), note: str(n?.note, 80) }))
+    .map((n) => ({ label: str(n?.label, 24), note: str(n?.note, 80), icon: ico(n?.icon) }))
     .filter((n) => n.label)
     .slice(0, max);
 }
@@ -82,12 +124,12 @@ for (const file of files) {
   }
 
   const concepts = arr(parsed.concepts)
-    .map((c) => ({ term: str(c?.term, 40), plain: str(c?.plain, 80), detail: str(c?.detail, 300) }))
+    .map((c) => ({ term: str(c?.term, 40), icon: ico(c?.icon), plain: str(c?.plain, 80), detail: str(c?.detail, 300) }))
     .filter((c) => c.term && c.plain)
     .slice(0, 4);
 
   const impact = arr(parsed.impact)
-    .map((i) => ({ who: str(i?.who, 20), what: str(i?.what, 160) }))
+    .map((i) => ({ who: str(i?.who, 20), icon: ico(i?.icon), what: str(i?.what, 160) }))
     .filter((i) => i.who && i.what)
     .slice(0, 3);
 
@@ -104,6 +146,7 @@ for (const file of files) {
 
   deepDives.push({
     id: topic.id,
+    icon: ico(parsed.icon),
     topicRank: topic.rank,
     sourceLabel: topic.sourceLabel,
     url: topic.url,
@@ -118,7 +161,12 @@ for (const file of files) {
     analogy: {
       title: str(parsed?.analogy?.title, 30) || 'たとえるなら',
       body: str(parsed?.analogy?.body, 400),
+      fromIcon: ico(parsed?.analogy?.fromIcon),
+      fromLabel: str(parsed?.analogy?.fromLabel, 20),
+      toIcon: ico(parsed?.analogy?.toIcon),
+      toLabel: str(parsed?.analogy?.toLabel, 20),
     },
+    metrics: normalizeMetrics(parsed.metrics),
     concepts,
     diagram: normalizeDiagram(parsed.diagram),
     impact,
@@ -137,6 +185,8 @@ await writeFile(reportPath, `${JSON.stringify(report, null, 2)}\n`, 'utf8');
 
 console.log(`[apply-explain] ${deepDives.length} / ${(report.featuredIds ?? []).length} 件の深掘り解説を差し込みました`);
 for (const d of deepDives) {
-  console.log(`  - ${d.id}: ${d.headline}（図: ${d.diagram?.type ?? 'なし'} / 要素技術 ${d.concepts.length} 件）`);
+  console.log(
+    `  - ${d.id}: ${d.headline}（図: ${d.diagram?.type ?? 'なし'} / 数値 ${d.metrics.length} 件 / 要素技術 ${d.concepts.length} 件）`
+  );
 }
 for (const p of problems) console.warn(`  ! ${p}`);

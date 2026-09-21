@@ -4,9 +4,23 @@
 //   renderExplainPage() … 主要トピックの深掘り解説（メインページ）
 //   renderListPage()    … 今週集めたトピックの一覧（サブページ）
 import { jstLabel } from './util.mjs';
+import { icon } from './icons.mjs';
 
 const esc = (s = '') =>
   String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);
+
+/** 大きな数を日本語の単位に丸めて読みやすくする（1000000 -> 100万） */
+function jpNumber(n) {
+  const abs = Math.abs(n);
+  const trim = (v) => String(Number(v.toFixed(Math.abs(v) >= 100 ? 0 : Math.abs(v) >= 10 ? 1 : 2)));
+  if (abs >= 1e12) return `${trim(n / 1e12)}兆`;
+  if (abs >= 1e8) return `${trim(n / 1e8)}億`;
+  if (abs >= 1e4) return `${trim(n / 1e4)}万`;
+  if (Number.isInteger(n)) return n.toLocaleString('ja-JP');
+  // 0.042 のような小さい値を 0.04 に丸めてしまわないよう有効数字で扱う
+  if (abs < 1) return String(Number(n.toPrecision(2)));
+  return trim(n);
+}
 
 // 深掘り1本ごとに色を変えて、読み手が章の切れ目を見失わないようにする
 const ACCENTS = ['a1', 'a2', 'a3', 'a4', 'a5'];
@@ -163,6 +177,7 @@ a{color:inherit}
 .hero-sum{margin:0;color:var(--ink-soft);font-size:clamp(13px,3.4vw,15px)}
 .gr-arrow{display:block;width:34px;height:54px;margin:2px auto;color:var(--accent-2)}
 .gr-arrow-r{width:54px;height:34px;color:var(--accent-2);flex:none}
+.cmp-mid .gr-arrow-r{width:46px;height:30px}
 
 /* ── 付箋 ── */
 .notes{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,210px),1fr));gap:14px;margin:16px 0 8px}
@@ -206,7 +221,8 @@ a{color:inherit}
 .dive:nth-of-type(odd){transform:rotate(-.25deg)}
 .dive:nth-of-type(even){transform:rotate(.2deg)}
 
-.dive-top{display:flex;gap:13px;align-items:flex-start;margin-bottom:12px}
+.dive-top{display:flex;gap:12px;align-items:flex-start;margin-bottom:12px}
+.dive-top .ic-xl{margin-top:1px}
 .dive-no{
   flex:none;width:42px;height:42px;display:grid;place-items:center;
   font-size:19px;font-weight:700;color:var(--paper);background:var(--ac);
@@ -242,9 +258,9 @@ a{color:inherit}
   border-radius:16px 200px 14px 195px/195px 14px 205px 16px;
   padding:14px 15px;box-shadow:3px 4px 0 var(--shadow);
 }
-.concept .term{display:flex;align-items:baseline;gap:7px;flex-wrap:wrap;margin-bottom:4px}
+.concept .term{display:flex;align-items:center;gap:7px;flex-wrap:wrap;margin-bottom:4px;color:var(--ac)}
 .concept .term b{font-size:16px;color:var(--ac)}
-.concept .plain{font-size:13px;color:var(--ink-soft)}
+.concept .plain{font-size:13px;color:var(--ink-soft);flex:1 1 100%}
 .concept p{margin:6px 0 0;font-size:13.5px;line-height:1.8;color:var(--ink)}
 
 /* ── 図版（3種） ── */
@@ -273,7 +289,7 @@ a{color:inherit}
 .flow-body span{font-size:13px;color:var(--ink-soft);line-height:1.7}
 
 /* compare: 2カラム＋中央の矢印 */
-.cmp{display:flex;gap:12px;align-items:center;justify-content:center;flex-wrap:wrap}
+.cmp{display:flex;gap:12px;align-items:flex-start;justify-content:center;flex-wrap:wrap}
 .cmp-col{flex:1 1 220px;min-width:0}
 .cmp-col h5{
   margin:0 0 10px;font-size:14px;text-align:center;padding:4px 10px;
@@ -288,7 +304,7 @@ a{color:inherit}
 .cmp-col.was .cmp-item{opacity:.72;border-style:dashed}
 .cmp-item b{display:block;font-size:14px}
 .cmp-item span{font-size:12.5px;color:var(--ink-soft);line-height:1.65}
-.cmp-mid{display:grid;place-items:center;flex:0 0 auto}
+.cmp-mid{display:grid;place-items:center;flex:0 0 auto;align-self:center;color:var(--ac)}
 .cmp-mid .gr-arrow{display:none}
 @media (max-width:560px){
   .cmp{flex-direction:column;align-items:stretch}
@@ -316,7 +332,8 @@ a{color:inherit}
 .impacts{display:grid;gap:11px}
 .impact{display:flex;gap:11px;align-items:flex-start;flex-wrap:wrap}
 .impact-who{
-  flex:none;font-size:13px;padding:3px 12px;color:var(--paper);background:var(--ac);
+  flex:none;display:inline-flex;align-items:center;gap:5px;
+  font-size:13px;padding:3px 12px;color:var(--paper);background:var(--ac);
   border-radius:190px 12px 185px 13px/13px 180px 12px 195px;white-space:nowrap;
 }
 .impact-what{flex:1 1 220px;font-size:14px;line-height:1.85;min-width:0}
@@ -338,6 +355,59 @@ a{color:inherit}
 .nextstep b{color:var(--ac)}
 .dive-src{margin:16px 0 0;font-size:12.5px;color:var(--ink-faint);word-break:break-word}
 .dive-src a{color:var(--ac)}
+
+/* ── アイコン ── */
+.ic{width:1.35em;height:1.35em;flex:none;vertical-align:-.3em}
+.ic-lg{width:30px;height:30px;flex:none}
+.ic-xl{width:40px;height:40px;flex:none}
+
+/* ── 数値の視覚化 ── */
+.metrics{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,250px),1fr));gap:14px}
+.metric{
+  background:var(--card-2);border:2.6px solid var(--ink);
+  border-radius:14px 190px 16px 195px/195px 16px 200px 14px;
+  padding:13px 15px 14px;box-shadow:3px 4px 0 var(--shadow);
+}
+.metric-head{display:flex;align-items:center;gap:8px;margin-bottom:9px;color:var(--ac)}
+.metric-head b{font-size:14.5px;line-height:1.4}
+.metric-row{display:flex;align-items:center;gap:8px;margin-bottom:6px}
+.metric-tag{flex:none;width:4.6em;font-size:11.5px;color:var(--ink-faint);text-align:right;white-space:nowrap}
+.metric-bar{flex:1;height:20px;min-width:0;position:relative}
+.metric-bar i{
+  position:absolute;left:0;top:0;bottom:0;display:block;min-width:18px;
+  border-radius:4px 14px 5px 12px;border:1.8px solid var(--ink);
+}
+.metric-bar.was i{background:transparent;border-style:dashed;opacity:.65}
+.metric-bar.now i{background:color-mix(in srgb, var(--ac) 45%, transparent)}
+.metric-val{font-size:13px;white-space:nowrap;flex:none;font-weight:700}
+.metric-delta{
+  display:inline-flex;align-items:center;gap:5px;margin-top:6px;font-size:12.5px;
+  padding:2px 11px;color:var(--paper);background:var(--ac);
+  border-radius:185px 11px 180px 12px/12px 175px 11px 190px;
+}
+.metric-big{display:flex;align-items:baseline;gap:5px;flex-wrap:wrap;margin:2px 0 0}
+.metric-big strong{font-size:clamp(26px,7vw,36px);line-height:1.15;color:var(--ac);font-weight:700}
+.metric-big span{font-size:14px;color:var(--ink-soft)}
+.metric-note{margin:5px 0 0;font-size:12px;color:var(--ink-faint);line-height:1.6}
+
+/* ── たとえ話のミニ図 ── */
+.analogy-strip{
+  display:flex;align-items:center;justify-content:center;gap:10px;flex-wrap:wrap;
+  margin:12px 0 2px;padding-top:11px;border-top:2.5px dashed rgba(0,0,0,.18);
+}
+:root[data-theme="dark"] .analogy-strip{border-top-color:rgba(255,255,255,.2)}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .analogy-strip{border-top-color:rgba(255,255,255,.2)}}
+.analogy-strip figure{display:grid;justify-items:center;gap:3px;margin:0;font-size:12.5px;max-width:110px;text-align:center}
+.analogy-strip figure .ic-lg{color:var(--ac)}
+.analogy-strip .gr-arrow-r{width:52px;height:30px;color:var(--ac);opacity:1}
+
+/* ── 図版のアイコン ── */
+.flow-body b .ic,.cmp-item b .ic,.layer b .ic{margin-right:5px;color:var(--ac)}
+.cyc-loop{
+  display:flex;align-items:center;justify-content:center;gap:7px;margin-top:10px;
+  font-size:12.5px;color:var(--ac);
+}
+.cyc-loop .ic{width:1.5em;height:1.5em}
 
 /* ═══════════════ 一覧ページのカード ═══════════════ */
 .cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,300px),1fr));gap:18px}
@@ -418,22 +488,28 @@ function renderDiagram(d) {
   if (!d) return '';
   let body = '';
 
-  if (d.type === 'flow') {
+  const label = (n) => `${n.icon ? icon(n.icon) : ''}${esc(n.label)}`;
+
+  if (d.type === 'flow' || d.type === 'cycle') {
     body = `<div class="flow">
 ${d.nodes
   .map(
     (n, i) => `        <div class="flow-step">
           <div class="flow-no">${i + 1}</div>
-          <div class="flow-body"><b>${esc(n.label)}</b>${n.note ? `<span>${esc(n.note)}</span>` : ''}</div>
+          <div class="flow-body"><b>${label(n)}</b>${n.note ? `<span>${esc(n.note)}</span>` : ''}</div>
         </div>`
   )
   .join('\n')}
-      </div>`;
+      </div>${
+        d.type === 'cycle'
+          ? `\n      <p class="cyc-loop">${icon('refresh')}最後まで進んだら、また 1 に戻って繰り返します</p>`
+          : ''
+      }`;
   } else if (d.type === 'compare') {
     const col = (side, data) => `<div class="cmp-col ${side}">
           <h5>${esc(data.title)}</h5>
 ${data.nodes
-  .map((n) => `          <div class="cmp-item"><b>${esc(n.label)}</b>${n.note ? `<span>${esc(n.note)}</span>` : ''}</div>`)
+  .map((n) => `          <div class="cmp-item"><b>${label(n)}</b>${n.note ? `<span>${esc(n.note)}</span>` : ''}</div>`)
   .join('\n')}
         </div>`;
     body = `<div class="cmp">
@@ -446,7 +522,7 @@ ${data.nodes
     const stacked = [...d.nodes].reverse();
     body = `<div class="layers">
 ${stacked
-  .map((n) => `        <div class="layer"><b>${esc(n.label)}</b>${n.note ? `<span>${esc(n.note)}</span>` : ''}</div>`)
+  .map((n) => `        <div class="layer"><b>${label(n)}</b>${n.note ? `<span>${esc(n.note)}</span>` : ''}</div>`)
   .join('\n')}
       </div>
       <p class="layers-note">↑ 上にあるものほど、下のものの上に成り立っています</p>`;
@@ -462,6 +538,39 @@ ${stacked
 }
 
 // ─────────────────────────────────────────────
+// 数値の視覚化
+// ─────────────────────────────────────────────
+function renderMetric(m) {
+  const head = `<div class="metric-head">${m.icon ? icon(m.icon, 'ic ic-lg') : ''}<b>${esc(m.label)}</b></div>`;
+
+  if (m.kind === 'delta') {
+    const max = Math.max(m.before, m.after) || 1;
+    const pct = (v) => `${Math.max(6, Math.round((v / max) * 100))}%`;
+    return `        <div class="metric">
+          ${head}
+          <div class="metric-row">
+            <span class="metric-tag">これまで</span>
+            <span class="metric-bar was"><i style="width:${pct(m.before)}"></i></span>
+            <span class="metric-val">${esc(jpNumber(m.before))}${esc(m.unit)}</span>
+          </div>
+          <div class="metric-row">
+            <span class="metric-tag">これから</span>
+            <span class="metric-bar now"><i style="width:${pct(m.after)}"></i></span>
+            <span class="metric-val">${esc(jpNumber(m.after))}${esc(m.unit)}</span>
+          </div>
+          <span class="metric-delta">${icon(m.delta.kind === 'reduce' ? 'down' : 'up')}${esc(m.delta.text)}</span>
+          ${m.note ? `<p class="metric-note">${esc(m.note)}</p>` : ''}
+        </div>`;
+  }
+
+  return `        <div class="metric">
+          ${head}
+          <p class="metric-big"><strong>${esc(jpNumber(m.value))}</strong><span>${esc(m.unit)}</span></p>
+          ${m.note ? `<p class="metric-note">${esc(m.note)}</p>` : ''}
+        </div>`;
+}
+
+// ─────────────────────────────────────────────
 // 深掘り1本
 // ─────────────────────────────────────────────
 function renderDive(d, i) {
@@ -470,6 +579,7 @@ function renderDive(d, i) {
     <article class="dive ${accent}" id="dive-${esc(d.id)}">
       <div class="dive-top">
         <div class="dive-no">${i + 1}</div>
+        ${d.icon ? `<span class="ic-xl" style="color:var(--ac)">${icon(d.icon, 'ic-xl')}</span>` : ''}
         <div>
           <h3 class="dive-head">${esc(d.headline)}</h3>
           <p class="dive-meta">${esc(d.sourceLabel)}・${esc(jstLabel(d.publishedAt))}・原題: ${esc(d.originalTitle)}</p>
@@ -482,7 +592,28 @@ function renderDive(d, i) {
         d.background.body || d.analogy.body
           ? `<div class="two">
         ${d.background.body ? `<div class="panel bg"><b>${esc(d.background.title)}</b>${esc(d.background.body)}</div>` : ''}
-        ${d.analogy.body ? `<div class="panel an"><b>${esc(d.analogy.title)}</b>${esc(d.analogy.body)}</div>` : ''}
+        ${
+          d.analogy.body
+            ? `<div class="panel an"><b>${esc(d.analogy.title)}</b>${esc(d.analogy.body)}${
+                d.analogy.fromIcon && d.analogy.toIcon
+                  ? `<div class="analogy-strip">
+            <figure>${icon(d.analogy.fromIcon, 'ic ic-lg')}<figcaption>${esc(d.analogy.fromLabel)}</figcaption></figure>
+            ${arrowRight()}
+            <figure>${icon(d.analogy.toIcon, 'ic ic-lg')}<figcaption>${esc(d.analogy.toLabel)}</figcaption></figure>
+          </div>`
+                  : ''
+              }</div>`
+            : ''
+        }
+      </div>`
+          : ''
+      }
+
+      ${
+        d.metrics?.length
+          ? `<div class="dd-sub"><h4>数字で見る</h4><div class="r"></div></div>
+      <div class="metrics">
+${d.metrics.map(renderMetric).join('\n')}
       </div>`
           : ''
       }
@@ -501,7 +632,7 @@ ${renderDiagram(d.diagram)}`
 ${d.concepts
   .map(
     (c) => `        <div class="concept">
-          <div class="term"><b>${esc(c.term)}</b><span class="plain">${esc(c.plain)}</span></div>
+          <div class="term">${c.icon ? icon(c.icon, 'ic ic-lg') : ''}<b>${esc(c.term)}</b><span class="plain">${esc(c.plain)}</span></div>
           ${c.detail ? `<p>${esc(c.detail)}</p>` : ''}
         </div>`
   )
@@ -516,7 +647,7 @@ ${d.concepts
       <div class="impacts">
 ${d.impact
   .map(
-    (im) => `        <div class="impact"><span class="impact-who">${esc(im.who)}</span><span class="impact-what">${esc(im.what)}</span></div>`
+    (im) => `        <div class="impact"><span class="impact-who">${im.icon ? icon(im.icon) : ''}${esc(im.who)}</span><span class="impact-what">${esc(im.what)}</span></div>`
   )
   .join('\n')}
       </div>`
